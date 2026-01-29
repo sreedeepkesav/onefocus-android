@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OneFocus - Android Widget Prototypes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --md-primary: #D0BCFF;
+            --md-on-primary: #381E72;
+            --md-primary-container: #4F378B;
+            --md-on-primary-container: #EADDFF;
+
+            --md-secondary: #CCC2DC;
+            --md-tertiary: #EFB8C8;
+
+            --md-surface: #141218;
+            --md-surface-container: #211F26;
+            --md-surface-container-high: #2B2930;
+            --md-surface-container-highest: #36343B;
+
+            --md-on-surface: #E6E0E9;
+            --md-on-surface-variant: #CAC4D0;
+            --md-outline: #938F99;
+            --md-outline-variant: #49454F;
+
+            --md-green: #A8DAB5;
+            --md-yellow: #FFE082;
+            --md-cyan: #A8E6CF;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            -webkit-font-smoothing: antialiased;
+            color: var(--md-on-surface);
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 400;
+            text-align: center;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--md-on-surface) 0%, var(--md-primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--md-on-surface-variant);
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 400;
+            margin: 40px 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title .badge {
+            font-size: 11px;
+            padding: 4px 12px;
+            background: var(--md-primary-container);
+            color: var(--md-on-primary-container);
+            border-radius: 100px;
+            font-weight: 500;
+        }
+
+        .widget-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .description {
+            font-size: 14px;
+            color: var(--md-on-surface-variant);
+            line-height: 1.6;
+            margin-bottom: 24px;
+            padding: 0 10px;
+        }
+
+        .widget-label {
+            text-align: center;
+            font-size: 12px;
+            color: var(--md-on-surface-variant);
+            margin-top: 12px;
+        }
+
+        .variant-row {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .variant {
+            text-align: center;
+        }
+
+        /* ============ SMALL WIDGET (2x2) ============ */
+        .widget-small {
+            width: 160px;
+            height: 160px;
+            background: var(--md-surface-container);
+            border-radius: 28px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .widget-small::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(208, 188, 255, 0.08) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .widget-small .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .widget-small .app-name {
+            font-size: 11px;
+            color: var(--md-outline);
+            letter-spacing: 0.5px;
+        }
+
+        .widget-small .icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--md-primary), var(--md-tertiary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .widget-small .day-display {
+            font-size: 52px;
+            font-weight: 300;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            z-index: 1;
+        }
+
+        .widget-small .day-label {
+            font-size: 12px;
+            color: var(--md-on-surface-variant);
+            margin-bottom: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .widget-small .habit-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .widget-small .status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .widget-small .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--md-primary);
+        }
+
+        .widget-small .status-dot.done {
+            background: var(--md-green);
+        }
+
+        .widget-small .status-text {
+            font-size: 11px;
+            color: var(--md-on-surface-variant);
+        }
+
+        /* ============ MEDIUM WIDGET (4x2) ============ */
+        .widget-medium {
+            width: 340px;
+            height: 160px;
+            background: var(--md-surface-container);
+            border-radius: 28px;
+            padding: 16px 20px;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .widget-medium::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(208, 188, 255, 0.08) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .widget-medium .left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+
+        .widget-medium .header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .widget-medium .icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--md-primary), var(--md-tertiary));
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .widget-medium .app-name {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--md-on-surface-variant);
+        }
+
+        .widget-medium .habit-name {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .widget-medium .trigger {
+            font-size: 13px;
+            color: var(--md-on-surface-variant);
+            margin-bottom: auto;
+        }
+
+        .widget-medium .trigger span {
+            color: var(--md-on-surface);
+        }
+
+        .widget-medium .action-hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            background: var(--md-primary);
+            color: var(--md-on-primary);
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 8px;
+            width: fit-content;
+        }
+
+        .widget-medium .action-hint.completed {
+            background: var(--md-green);
+            background: rgba(168, 218, 181, 0.15);
+            color: var(--md-green);
+        }
+
+        .widget-medium .right {
+            width: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .widget-medium .progress-ring {
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+
+        .widget-medium .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .widget-medium .progress-ring-bg {
+            fill: none;
+            stroke: var(--md-surface-container-highest);
+            stroke-width: 6;
+        }
+
+        .widget-medium .progress-ring-fill {
+            fill: none;
+            stroke: url(#widgetGradient);
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-dasharray: 201;
+            stroke-dashoffset: 161;
+        }
+
+        .widget-medium .progress-center {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .widget-medium .day-number {
+            font-size: 28px;
+            font-weight: 300;
+            background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .widget-medium .day-label {
+            font-size: 10px;
+            color: var(--md-outline);
+        }
+
+        /* ============ LARGE WIDGET (4x4) ============ */
+        .widget-large {
+            width: 340px;
+            height: 340px;
+            background: var(--md-surface-container);
+            border-radius: 28px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .widget-large::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(180deg, rgba(208, 188, 255, 0.08) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .widget-large .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .widget-large .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .widget-large .icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--md-primary), var(--md-tertiary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .widget-large .app-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .widget-large .day-badge {
+            background: var(--md-primary-container);
+            color: var(--md-on-primary-container);
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .widget-large .journey-visual {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            margin: 20px 0;
+        }
+
+        .widget-large .journey-path {
+            height: 60px;
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .widget-large .journey-path svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .widget-large .journey-path-bg {
+            fill: none;
+            stroke: var(--md-surface-container-highest);
+            stroke-width: 6;
+            stroke-linecap: round;
+        }
+
+        .widget-large .journey-path-fill {
+            fill: none;
+            stroke: url(#largeWidgetGradient);
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-dasharray: 280;
+            stroke-dashoffset: 224;
+        }
+
+        .widget-large .journey-milestones {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .widget-large .milestone {
+            text-align: center;
+            opacity: 0.4;
+        }
+
+        .widget-large .milestone.active {
+            opacity: 1;
+        }
+
+        .widget-large .milestone .emoji {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .widget-large .milestone .label {
+            font-size: 10px;
+            color: var(--md-outline);
+        }
+
+        .widget-large .habit-section {
+            position: relative;
+            z-index: 1;
+        }
+
+        .widget-large .habit-name {
+            font-size: 22px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .widget-large .trigger {
+            font-size: 14px;
+            color: var(--md-on-surface-variant);
+            margin-bottom: 16px;
+        }
+
+        .widget-large .trigger span {
+            color: var(--md-on-surface);
+        }
+
+        .widget-large .action-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--md-primary);
+            color: var(--md-on-primary);
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            text-align: center;
+        }
+
+        .widget-large .action-btn.completed {
+            background: rgba(168, 218, 181, 0.15);
+            color: var(--md-green);
+        }
+
+        /* ============ GLANCE WIDGET ============ */
+        .glance-section {
+            background: var(--md-surface-container);
+            border-radius: 28px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .glance-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .glance-header .icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--md-primary), var(--md-tertiary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .glance-header .info .app-name {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .glance-header .info .status {
+            font-size: 12px;
+            color: var(--md-on-surface-variant);
+        }
+
+        .glance-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .glance-content .habit-info .name {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .glance-content .habit-info .trigger {
+            font-size: 13px;
+            color: var(--md-on-surface-variant);
+        }
+
+        .glance-content .day-circle {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--md-primary-container);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .glance-content .day-circle .number {
+            font-size: 22px;
+            font-weight: 300;
+            color: var(--md-on-primary-container);
+        }
+
+        .glance-content .day-circle .label {
+            font-size: 9px;
+            color: var(--md-on-primary-container);
+            opacity: 0.8;
+        }
+
+        /* ============ AT A GLANCE WIDGET ============ */
+        .at-a-glance {
+            width: 100%;
+            max-width: 360px;
+            margin: 0 auto 20px;
+            background: rgba(33, 31, 38, 0.8);
+            border-radius: 20px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            backdrop-filter: blur(20px);
+        }
+
+        .at-a-glance .icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--md-primary), var(--md-tertiary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .at-a-glance .content {
+            flex: 1;
+        }
+
+        .at-a-glance .habit {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .at-a-glance .info {
+            font-size: 12px;
+            color: var(--md-on-surface-variant);
+        }
+
+        .at-a-glance .action {
+            padding: 8px 16px;
+            background: var(--md-primary-container);
+            color: var(--md-on-primary-container);
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* ============ ALWAYS-ON DISPLAY ============ */
+        .aod-section {
+            background: #000;
+            border-radius: 28px;
+            padding: 40px 20px;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .aod-time {
+            font-size: 72px;
+            font-weight: 200;
+            letter-spacing: -2px;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .aod-date {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 24px;
+        }
+
+        .aod-widget {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .aod-widget .icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--md-primary), var(--md-tertiary));
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .aod-widget .text {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .aod-widget .day {
+            color: var(--md-primary);
+            opacity: 0.8;
+        }
+
+        /* ============ NOTIFICATION STYLE ============ */
+        .notification {
+            width: 100%;
+            max-width: 360px;
+            margin: 0 auto 20px;
+            background: var(--md-surface-container);
+            border-radius: 24px;
+            overflow: hidden;
+        }
+
+        .notification .accent-bar {
+            height: 4px;
+            background: linear-gradient(90deg, var(--md-primary), var(--md-tertiary));
+        }
+
+        .notification .content {
+            padding: 16px 20px;
+        }
+
+        .notification .header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .notification .icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--md-primary), var(--md-tertiary));
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .notification .app-name {
+            font-size: 12px;
+            color: var(--md-on-surface-variant);
+        }
+
+        .notification .time {
+            margin-left: auto;
+            font-size: 11px;
+            color: var(--md-outline);
+        }
+
+        .notification .title {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .notification .body {
+            font-size: 13px;
+            color: var(--md-on-surface-variant);
+            margin-bottom: 12px;
+        }
+
+        .notification .actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .notification .action-btn {
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+
+        .notification .action-btn.primary {
+            background: var(--md-primary);
+            color: var(--md-on-primary);
+        }
+
+        .notification .action-btn.secondary {
+            background: var(--md-surface-container-high);
+            color: var(--md-on-surface);
+        }
+
+        /* ============ QUICK SETTINGS TILE ============ */
+        .qs-section {
+            background: var(--md-surface-container);
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 32px;
+        }
+
+        .qs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 8px 16px;
+            border-bottom: 1px solid var(--md-outline-variant);
+            margin-bottom: 16px;
+        }
+
+        .qs-header .time {
+            font-size: 14px;
+        }
+
+        .qs-header .icons {
+            display: flex;
+            gap: 16px;
+            font-size: 16px;
+        }
+
+        .qs-tiles {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .qs-tile {
+            aspect-ratio: 1;
+            background: var(--md-surface-container-high);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px;
+        }
+
+        .qs-tile.active {
+            background: var(--md-primary-container);
+        }
+
+        .qs-tile .icon {
+            font-size: 20px;
+        }
+
+        .qs-tile .label {
+            font-size: 10px;
+            color: var(--md-on-surface-variant);
+            text-align: center;
+        }
+
+        .qs-tile.active .label {
+            color: var(--md-on-primary-container);
+        }
+
+        .qs-tile.onefocus {
+            background: linear-gradient(135deg, rgba(208, 188, 255, 0.2), rgba(239, 184, 200, 0.2));
+            border: 1px solid var(--md-primary);
+        }
+
+        .qs-tile.onefocus .icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, var(--md-primary), var(--md-tertiary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Android Widget Prototypes</h1>
+        <p class="subtitle">Home Screen, Glance & Notifications</p>
+
+        <!-- HOME SCREEN WIDGETS -->
+        <h2 class="section-title">
+            Home Screen Widgets
+            <span class="badge">Glance API</span>
+        </h2>
+        <p class="description">Material You widgets adapt to your wallpaper colors. They provide at-a-glance information and launch the app on tap.</p>
+
+        <svg width="0" height="0">
+            <defs>
+                <linearGradient id="widgetGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#D0BCFF"/>
+                    <stop offset="100%" style="stop-color:#A8DAB5"/>
+                </linearGradient>
+                <linearGradient id="largeWidgetGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#D0BCFF"/>
+                    <stop offset="50%" style="stop-color:#EFB8C8"/>
+                    <stop offset="100%" style="stop-color:#A8DAB5"/>
+                </linearGradient>
+            </defs>
+        </svg>
+
+        <div class="widget-group">
+            <div class="variant">
+                <div class="widget-small">
+                    <div class="header">
+                        <span class="app-name">OneFocus</span>
+                        <div class="icon">◉</div>
+                    </div>
+                    <div class="day-display">12</div>
+                    <div class="day-label">of 66 days</div>
+                    <div class="habit-name">Meditate</div>
+                    <div class="status">
+                        <div class="status-dot"></div>
+                        <span class="status-text">Not done today</span>
+                    </div>
+                </div>
+                <div class="widget-label">Small (2x2) - Pending</div>
+            </div>
+
+            <div class="variant">
+                <div class="widget-small">
+                    <div class="header">
+                        <span class="app-name">OneFocus</span>
+                        <div class="icon">◉</div>
+                    </div>
+                    <div class="day-display">12</div>
+                    <div class="day-label">of 66 days</div>
+                    <div class="habit-name">Meditate</div>
+                    <div class="status">
+                        <div class="status-dot done"></div>
+                        <span class="status-text">Done today ✓</span>
+                    </div>
+                </div>
+                <div class="widget-label">Small (2x2) - Completed</div>
+            </div>
+        </div>
+
+        <div class="widget-group">
+            <div class="variant">
+                <div class="widget-medium">
+                    <div class="left">
+                        <div class="header">
+                            <div class="icon">◉</div>
+                            <span class="app-name">OneFocus</span>
+                        </div>
+                        <div class="habit-name">Meditate</div>
+                        <div class="trigger">After I <span>pour my coffee</span></div>
+                        <div class="action-hint">⏱ Start Focus</div>
+                    </div>
+                    <div class="right">
+                        <div class="progress-ring">
+                            <svg width="80" height="80" viewBox="0 0 80 80">
+                                <circle class="progress-ring-bg" cx="40" cy="40" r="32"/>
+                                <circle class="progress-ring-fill" cx="40" cy="40" r="32"/>
+                            </svg>
+                            <div class="progress-center">
+                                <div class="day-number">12</div>
+                                <div class="day-label">of 66</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget-label">Medium (4x2) - Pending</div>
+            </div>
+        </div>
+
+        <div class="widget-group">
+            <div class="variant">
+                <div class="widget-medium">
+                    <div class="left">
+                        <div class="header">
+                            <div class="icon">◉</div>
+                            <span class="app-name">OneFocus</span>
+                        </div>
+                        <div class="habit-name">Meditate</div>
+                        <div class="trigger">After I <span>pour my coffee</span></div>
+                        <div class="action-hint completed">✓ Completed</div>
+                    </div>
+                    <div class="right">
+                        <div class="progress-ring">
+                            <svg width="80" height="80" viewBox="0 0 80 80">
+                                <circle class="progress-ring-bg" cx="40" cy="40" r="32"/>
+                                <circle class="progress-ring-fill" cx="40" cy="40" r="32"/>
+                            </svg>
+                            <div class="progress-center">
+                                <div class="day-number">12</div>
+                                <div class="day-label">of 66</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget-label">Medium (4x2) - Completed</div>
+            </div>
+        </div>
+
+        <!-- LARGE WIDGET -->
+        <h2 class="section-title">
+            Large Widget
+            <span class="badge">4x4</span>
+        </h2>
+        <p class="description">The large widget shows the full journey visualization with milestones, making it perfect for motivation-focused users.</p>
+
+        <div class="widget-group">
+            <div class="variant">
+                <div class="widget-large">
+                    <div class="header">
+                        <div class="header-left">
+                            <div class="icon">◉</div>
+                            <span class="app-name">OneFocus</span>
+                        </div>
+                        <div class="day-badge">Day 12 of 66</div>
+                    </div>
+                    <div class="journey-visual">
+                        <div class="journey-path">
+                            <svg viewBox="0 0 280 50" preserveAspectRatio="none">
+                                <path class="journey-path-bg" d="M10,40 Q70,10 140,25 T270,15"/>
+                                <path class="journey-path-fill" d="M10,40 Q70,10 140,25 T270,15"/>
+                            </svg>
+                        </div>
+                        <div class="journey-milestones">
+                            <div class="milestone active"><div class="emoji">🌱</div><div class="label">Start</div></div>
+                            <div class="milestone"><div class="emoji">🌿</div><div class="label">Day 21</div></div>
+                            <div class="milestone"><div class="emoji">🌳</div><div class="label">Day 42</div></div>
+                            <div class="milestone"><div class="emoji">✨</div><div class="label">Day 66</div></div>
+                        </div>
+                    </div>
+                    <div class="habit-section">
+                        <div class="habit-name">Meditate</div>
+                        <div class="trigger">After I <span>pour my coffee</span></div>
+                        <button class="action-btn">Start Focus Session</button>
+                    </div>
+                </div>
+                <div class="widget-label">Large (4x4)</div>
+            </div>
+        </div>
+
+        <!-- AT A GLANCE -->
+        <h2 class="section-title">
+            At a Glance Integration
+            <span class="badge">Pixel</span>
+        </h2>
+        <p class="description">On Pixel devices, OneFocus can integrate with the At a Glance widget for contextual information.</p>
+
+        <div class="at-a-glance">
+            <div class="icon">◉</div>
+            <div class="content">
+                <div class="habit">Meditate</div>
+                <div class="info">Day 12 • After you pour your coffee</div>
+            </div>
+            <span class="action">Start</span>
+        </div>
+
+        <!-- ALWAYS-ON DISPLAY -->
+        <h2 class="section-title">
+            Always-On Display
+            <span class="badge">AMOLED</span>
+        </h2>
+        <p class="description">A minimal widget for Always-On Display provides a gentle reminder without draining battery.</p>
+
+        <div class="aod-section">
+            <div class="aod-time">10:30</div>
+            <div class="aod-date">Sun, Jan 26</div>
+            <div class="aod-widget">
+                <div class="icon">◉</div>
+                <span class="text">Meditate • <span class="day">Day 12</span></span>
+            </div>
+        </div>
+
+        <!-- NOTIFICATIONS -->
+        <h2 class="section-title">
+            Rich Notifications
+            <span class="badge">Actionable</span>
+        </h2>
+        <p class="description">Notifications can include quick actions to start the habit directly or mark it done for binary habits.</p>
+
+        <div class="notification">
+            <div class="accent-bar"></div>
+            <div class="content">
+                <div class="header">
+                    <div class="icon">◉</div>
+                    <span class="app-name">OneFocus</span>
+                    <span class="time">just now</span>
+                </div>
+                <div class="title">Time to Meditate</div>
+                <div class="body">Day 12 of your journey. You poured your coffee – your cue to start!</div>
+                <div class="actions">
+                    <button class="action-btn primary">Start Focus</button>
+                    <button class="action-btn secondary">Remind Later</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUICK SETTINGS -->
+        <h2 class="section-title">
+            Quick Settings Tile
+            <span class="badge">Optional</span>
+        </h2>
+        <p class="description">A Quick Settings tile allows users to start their habit directly from the notification shade.</p>
+
+        <div class="qs-section">
+            <div class="qs-header">
+                <span class="time">10:30</span>
+                <div class="icons">📶 🔋 ⚙️</div>
+            </div>
+            <div class="qs-tiles">
+                <div class="qs-tile active">
+                    <span class="icon">📶</span>
+                    <span class="label">Wi-Fi</span>
+                </div>
+                <div class="qs-tile">
+                    <span class="icon">📱</span>
+                    <span class="label">Mobile</span>
+                </div>
+                <div class="qs-tile active">
+                    <span class="icon">🔵</span>
+                    <span class="label">Bluetooth</span>
+                </div>
+                <div class="qs-tile onefocus">
+                    <div class="icon">◉</div>
+                    <span class="label">OneFocus</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- GLANCE WIDGET DETAIL -->
+        <h2 class="section-title">
+            Glance Composable
+            <span class="badge">Jetpack</span>
+        </h2>
+        <p class="description">Using Jetpack Glance, the widget automatically adapts to system theme and Material You colors.</p>
+
+        <div class="glance-section">
+            <div class="glance-header">
+                <div class="icon">◉</div>
+                <div class="info">
+                    <div class="app-name">OneFocus</div>
+                    <div class="status">Building Foundation</div>
+                </div>
+            </div>
+            <div class="glance-content">
+                <div class="habit-info">
+                    <div class="name">Meditate</div>
+                    <div class="trigger">After I pour my coffee</div>
+                </div>
+                <div class="day-circle">
+                    <span class="number">12</span>
+                    <span class="label">DAY</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

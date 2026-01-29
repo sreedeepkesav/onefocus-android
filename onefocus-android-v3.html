@@ -1,0 +1,2054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OneFocus - Android Prototype v3 (Complete)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* ============ MATERIAL DESIGN 3 SYSTEM ============ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            /* Material 3 Dark Theme - Purple Seed */
+            --md-primary: #D0BCFF;
+            --md-on-primary: #381E72;
+            --md-primary-container: #4F378B;
+            --md-on-primary-container: #EADDFF;
+
+            --md-secondary: #CCC2DC;
+            --md-on-secondary: #332D41;
+            --md-secondary-container: #4A4458;
+
+            --md-tertiary: #EFB8C8;
+            --md-tertiary-container: #633B48;
+
+            --md-surface: #141218;
+            --md-surface-container: #211F26;
+            --md-surface-container-high: #2B2930;
+            --md-surface-container-highest: #36343B;
+
+            --md-on-surface: #E6E0E9;
+            --md-on-surface-variant: #CAC4D0;
+            --md-outline: #938F99;
+            --md-outline-variant: #49454F;
+
+            /* Extended Colors */
+            --md-green: #A8DAB5;
+            --md-green-container: rgba(168, 218, 181, 0.15);
+            --md-yellow: #FFE082;
+            --md-yellow-container: rgba(255, 224, 130, 0.15);
+            --md-red: #F2B8B5;
+            --md-cyan: #A8E6CF;
+
+            /* Mood Colors */
+            --mood-1: #F2B8B5;
+            --mood-2: #FFE082;
+            --mood-3: #FFF3E0;
+            --mood-4: #A8DAB5;
+            --mood-5: #A8E6CF;
+
+            /* Elevation */
+            --elevation-1: 0 1px 3px 1px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.3);
+            --elevation-2: 0 2px 6px 2px rgba(0,0,0,0.15), 0 1px 2px rgba(0,0,0,0.3);
+            --elevation-3: 0 4px 8px 3px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.3);
+
+            /* Typography */
+            --display-large: 57px;
+            --display-medium: 45px;
+            --headline-large: 32px;
+            --headline-medium: 28px;
+            --headline-small: 24px;
+            --title-large: 22px;
+            --title-medium: 16px;
+            --body-large: 16px;
+            --body-medium: 14px;
+            --label-large: 14px;
+            --label-medium: 12px;
+            --label-small: 11px;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--md-surface);
+            color: var(--md-on-surface);
+            min-height: 100vh;
+            min-height: 100dvh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .android-device {
+            max-width: 412px;
+            margin: 0 auto;
+            min-height: 100vh;
+            min-height: 100dvh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            height: 24px;
+            padding: 0 16px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            font-size: var(--label-small);
+            color: var(--md-on-surface);
+            gap: 6px;
+        }
+
+        /* ============ VIEWS ============ */
+        .view {
+            display: none;
+            flex-direction: column;
+            min-height: calc(100vh - 24px);
+            min-height: calc(100dvh - 24px);
+            padding-bottom: 40px;
+            overflow-y: auto;
+        }
+
+        .view.active { display: flex; }
+
+        /* ============ COMMON COMPONENTS ============ */
+        .md-btn {
+            width: 100%;
+            padding: 16px 24px;
+            background: var(--md-primary);
+            color: var(--md-on-primary);
+            border: none;
+            border-radius: 100px;
+            font-size: var(--label-large);
+            font-weight: 500;
+            letter-spacing: 0.1px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .md-btn:active {
+            transform: scale(0.98);
+            background: var(--md-on-primary-container);
+        }
+
+        .md-btn-tonal {
+            background: var(--md-secondary-container);
+            color: var(--md-on-surface);
+        }
+
+        .md-btn-outlined {
+            background: transparent;
+            border: 1px solid var(--md-outline);
+            color: var(--md-primary);
+        }
+
+        .md-btn-text {
+            background: transparent;
+            color: var(--md-primary);
+            padding: 12px;
+        }
+
+        .top-app-bar {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 24px;
+            background: transparent;
+            border: none;
+            color: var(--md-on-surface);
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spacer { flex: 1; }
+        .hidden { display: none !important; }
+
+        .btn-container {
+            padding: 0 24px;
+            margin-top: auto;
+        }
+
+        /* ============ ONBOARDING ============ */
+        .onboarding-view {
+            padding: 24px;
+            text-align: center;
+            justify-content: center;
+            background: linear-gradient(180deg, var(--md-surface) 0%, rgba(208, 188, 255, 0.05) 100%);
+        }
+
+        .app-icon {
+            width: 96px;
+            height: 96px;
+            background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-tertiary) 100%);
+            border-radius: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            margin: 0 auto 32px;
+            box-shadow: var(--elevation-3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .onboarding-title {
+            font-size: var(--headline-large);
+            font-weight: 400;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--md-on-surface) 0%, var(--md-primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .onboarding-subtitle {
+            font-size: var(--body-large);
+            color: var(--md-on-surface-variant);
+            margin-bottom: 40px;
+        }
+
+        .science-cards { margin-bottom: 40px; }
+
+        .science-card {
+            background: var(--md-surface-container);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            text-align: left;
+            box-shadow: var(--elevation-1);
+        }
+
+        .science-card .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .science-card:nth-child(1) .icon { background: linear-gradient(135deg, var(--md-primary-container), var(--md-tertiary-container)); }
+        .science-card:nth-child(2) .icon { background: var(--md-yellow-container); }
+        .science-card:nth-child(3) .icon { background: var(--md-green-container); }
+
+        .science-card .content { flex: 1; }
+        .science-card .title { font-size: var(--title-medium); font-weight: 500; margin-bottom: 4px; }
+        .science-card .description { font-size: var(--body-medium); color: var(--md-on-surface-variant); line-height: 1.5; }
+        .science-card .stat { font-size: var(--headline-small); font-weight: 500; color: var(--md-primary); margin-top: 8px; }
+
+        /* ============ SETUP SCREENS ============ */
+        .setup-header {
+            padding: 0 24px 24px;
+            text-align: center;
+        }
+
+        .setup-step {
+            font-size: var(--label-medium);
+            color: var(--md-primary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+
+        .setup-title {
+            font-size: var(--headline-medium);
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        .setup-subtitle {
+            font-size: var(--body-large);
+            color: var(--md-on-surface-variant);
+        }
+
+        /* Habit Type Grid */
+        .habit-type-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 0 24px;
+            margin-bottom: 24px;
+        }
+
+        .habit-type-card {
+            background: var(--md-surface-container);
+            border: 2px solid transparent;
+            border-radius: 16px;
+            padding: 24px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            position: relative;
+        }
+
+        .habit-type-card.selected {
+            border-color: var(--md-primary);
+            background: var(--md-primary-container);
+        }
+
+        .habit-type-card .icon { font-size: 36px; margin-bottom: 12px; }
+        .habit-type-card .name { font-size: var(--title-medium); font-weight: 500; margin-bottom: 4px; }
+        .habit-type-card .desc { font-size: var(--label-medium); color: var(--md-on-surface-variant); }
+        .habit-type-card.selected .name { color: var(--md-on-primary-container); }
+
+        /* Text Fields */
+        .field-group {
+            padding: 0 24px;
+            margin-bottom: 20px;
+        }
+
+        .field-label {
+            font-size: var(--label-large);
+            color: var(--md-on-surface-variant);
+            margin-bottom: 8px;
+            padding-left: 4px;
+        }
+
+        .md-text-field {
+            width: 100%;
+            background: var(--md-surface-container-high);
+            border: none;
+            border-radius: 12px;
+            padding: 18px 16px;
+            font-size: var(--body-large);
+            color: var(--md-on-surface);
+            outline: none;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .md-text-field:focus {
+            border-color: var(--md-primary);
+            background: var(--md-surface-container-highest);
+        }
+
+        .md-text-field::placeholder { color: var(--md-outline); }
+
+        /* Metric Controls */
+        .metric-control {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .metric-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: var(--md-secondary-container);
+            border: none;
+            color: var(--md-on-surface);
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        .metric-display { flex: 1; text-align: center; }
+        .metric-display .value { font-size: 40px; font-weight: 400; }
+        .metric-display .unit { color: var(--md-on-surface-variant); font-size: var(--body-large); }
+
+        /* Intention Builder */
+        .intention-builder {
+            background: var(--md-surface-container);
+            border-radius: 20px;
+            padding: 24px;
+            margin: 0 24px 20px;
+        }
+
+        .intention-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .intention-label .badge {
+            font-size: var(--label-small);
+            color: var(--md-primary);
+            background: var(--md-primary-container);
+            padding: 6px 12px;
+            border-radius: 100px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .intention-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .intention-row:last-child { margin-bottom: 0; }
+        .intention-prefix { font-size: var(--body-large); color: var(--md-on-surface-variant); white-space: nowrap; }
+
+        .intention-input {
+            flex: 1;
+            background: var(--md-surface);
+            border: 1px solid var(--md-outline-variant);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: var(--body-large);
+            color: var(--md-on-surface);
+            outline: none;
+        }
+
+        .intention-input:focus { border-color: var(--md-primary); }
+        .intention-habit { font-size: var(--title-large); font-weight: 500; color: var(--md-primary); }
+
+        .pro-tip {
+            background: var(--md-green-container);
+            border-radius: 16px;
+            padding: 16px;
+            margin: 0 24px 24px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .pro-tip .icon { font-size: 24px; }
+        .pro-tip .text { font-size: var(--body-medium); color: var(--md-on-surface-variant); line-height: 1.5; }
+        .pro-tip strong { color: var(--md-green); }
+
+        /* ============ HOME VIEW ============ */
+        .home-view { padding-bottom: 100px; }
+
+        .home-header { padding: 16px 24px 24px; }
+
+        .greeting {
+            font-size: var(--headline-large);
+            font-weight: 400;
+            margin-bottom: 4px;
+        }
+
+        .date-display {
+            font-size: var(--body-large);
+            color: var(--md-on-surface-variant);
+        }
+
+        /* Journey Container */
+        .journey-container {
+            margin: 0 24px 24px;
+            background: var(--md-surface-container);
+            border-radius: 28px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--elevation-2);
+        }
+
+        .journey-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(208, 188, 255, 0.08) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .journey-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .journey-day-display { text-align: left; }
+
+        .journey-day-number {
+            font-size: 56px;
+            font-weight: 300;
+            background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+
+        .journey-day-label {
+            font-size: var(--label-medium);
+            color: var(--md-on-surface-variant);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .journey-phase-badge {
+            background: var(--md-primary-container);
+            color: var(--md-on-primary-container);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: var(--label-medium);
+            font-weight: 500;
+        }
+
+        /* Animated Path */
+        .journey-path {
+            position: relative;
+            height: 80px;
+            margin-bottom: 16px;
+        }
+
+        .journey-path svg { width: 100%; height: 100%; }
+        .journey-path-bg { fill: none; stroke: var(--md-surface-container-highest); stroke-width: 6; stroke-linecap: round; }
+        .journey-path-fill { fill: none; stroke: url(#journeyGradient); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 320; stroke-dashoffset: 320; transition: stroke-dashoffset 1s ease-out; }
+
+        .journey-marker {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--md-primary);
+            box-shadow: 0 0 20px rgba(208, 188, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: all 0.5s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .journey-marker::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px solid var(--md-primary);
+            opacity: 0.5;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.3); opacity: 0; }
+        }
+
+        .journey-milestones {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+
+        .milestone {
+            text-align: center;
+            opacity: 0.4;
+            transition: all 0.3s;
+        }
+
+        .milestone.reached, .milestone.current { opacity: 1; }
+        .milestone .icon { font-size: 22px; margin-bottom: 4px; }
+        .milestone.reached .icon { color: var(--md-green); }
+        .milestone.current .icon { color: var(--md-primary); }
+        .milestone .label { font-size: var(--label-small); color: var(--md-outline); }
+        .milestone.reached .label, .milestone.current .label { color: var(--md-on-surface-variant); }
+
+        /* Grace Days */
+        .grace-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 16px;
+            border-top: 1px solid var(--md-outline-variant);
+            margin-top: 16px;
+        }
+
+        .grace-label { font-size: var(--label-medium); color: var(--md-on-surface-variant); }
+        .grace-dots { display: flex; gap: 10px; }
+
+        .grace-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 7px;
+            background: var(--md-yellow);
+            box-shadow: 0 0 10px rgba(255, 224, 130, 0.4);
+            transition: all 0.3s;
+        }
+
+        .grace-dot.used { background: var(--md-surface-container-highest); box-shadow: none; }
+
+        /* ============ HABIT CARDS ============ */
+        .habits-section { padding: 0 24px; margin-bottom: 24px; }
+        .section-title { font-size: var(--label-large); color: var(--md-on-surface-variant); letter-spacing: 0.5px; margin-bottom: 16px; padding-left: 4px; }
+
+        .habit-card {
+            background: var(--md-surface-container);
+            border-radius: 24px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--elevation-1);
+        }
+
+        .habit-card-accent {
+            height: 4px;
+            background: linear-gradient(90deg, var(--md-primary), var(--md-tertiary));
+        }
+
+        .habit-card.completed .habit-card-accent { background: linear-gradient(90deg, var(--md-green), var(--md-cyan)); }
+
+        .habit-card-content { padding: 20px; }
+
+        .habit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .habit-type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: var(--label-small);
+            color: var(--md-on-primary-container);
+            background: var(--md-primary-container);
+            padding: 6px 12px;
+            border-radius: 100px;
+        }
+
+        .habit-order-badge {
+            font-size: var(--label-small);
+            color: var(--md-on-surface-variant);
+            background: var(--md-surface-container-high);
+            padding: 6px 12px;
+            border-radius: 100px;
+        }
+
+        .habit-name-display { font-size: var(--headline-small); font-weight: 400; margin-bottom: 6px; }
+        .habit-trigger-display { font-size: var(--body-large); color: var(--md-on-surface-variant); margin-bottom: 16px; }
+        .habit-trigger-display span { color: var(--md-on-surface); }
+
+        /* Mood Insight */
+        .mood-insight {
+            background: var(--md-green-container);
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .mood-insight .emoji { font-size: 24px; }
+        .mood-insight .text { font-size: var(--body-medium); color: var(--md-on-surface-variant); }
+        .mood-insight .highlight { color: var(--md-green); font-weight: 500; }
+
+        /* Habit Action Button */
+        .habit-action-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--md-primary), var(--md-tertiary));
+            color: var(--md-on-primary);
+            border: none;
+            border-radius: 100px;
+            font-size: var(--title-medium);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        .habit-action-btn:active { transform: scale(0.98); }
+
+        .habit-action-btn.completed {
+            background: var(--md-green-container);
+            color: var(--md-green);
+        }
+
+        /* Second Habit Unlock Card */
+        .unlock-card {
+            background: var(--md-surface-container);
+            border: 2px dashed var(--md-outline-variant);
+            border-radius: 24px;
+            padding: 28px;
+            text-align: center;
+        }
+
+        .unlock-card.locked { opacity: 0.6; }
+        .unlock-icon { font-size: 36px; margin-bottom: 12px; }
+        .unlock-title { font-size: var(--title-medium); font-weight: 500; margin-bottom: 6px; }
+        .unlock-desc { font-size: var(--body-medium); color: var(--md-on-surface-variant); margin-bottom: 16px; }
+
+        .unlock-progress {
+            height: 8px;
+            background: var(--md-surface-container-highest);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .unlock-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--md-primary), var(--md-green));
+            transition: width 0.5s;
+        }
+
+        .unlock-status { font-size: var(--label-medium); color: var(--md-outline); }
+
+        /* ============ ANALYTICS ============ */
+        .analytics-section { padding: 0 24px; margin-bottom: 24px; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            background: var(--md-surface-container);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--elevation-1);
+        }
+
+        .stat-card .value {
+            font-size: var(--headline-medium);
+            font-weight: 300;
+            background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-card .label { font-size: var(--label-medium); color: var(--md-on-surface-variant); margin-top: 4px; }
+
+        /* Weekly Heatmap */
+        .weekly-heatmap {
+            background: var(--md-surface-container);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .heatmap-title { font-size: var(--label-large); color: var(--md-on-surface-variant); margin-bottom: 16px; }
+        .heatmap-days { display: flex; justify-content: space-between; }
+        .heatmap-day { text-align: center; }
+        .heatmap-day .label { font-size: var(--label-small); color: var(--md-outline); margin-bottom: 10px; }
+
+        .heatmap-day .dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--md-surface-container-highest);
+            margin: 0 auto;
+            transition: all 0.3s;
+        }
+
+        .heatmap-day .dot.completed {
+            background: linear-gradient(135deg, var(--md-primary), var(--md-tertiary));
+            box-shadow: 0 4px 12px rgba(208, 188, 255, 0.3);
+        }
+
+        .heatmap-day .dot.today { border: 2px solid var(--md-primary); }
+
+        /* Mood Chart */
+        .mood-chart {
+            background: var(--md-surface-container);
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .mood-chart-title { font-size: var(--label-large); color: var(--md-on-surface-variant); margin-bottom: 16px; }
+
+        .mood-comparison {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 16px 0;
+        }
+
+        .mood-stat { text-align: center; }
+
+        .mood-stat .label {
+            font-size: var(--label-small);
+            color: var(--md-outline);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mood-stat .emoji { font-size: 36px; margin-bottom: 4px; }
+        .mood-stat .value { font-size: var(--title-medium); font-weight: 500; }
+
+        .mood-arrow {
+            font-size: 28px;
+            color: var(--md-green);
+        }
+
+        .mood-delta { text-align: center; }
+
+        .mood-delta .value {
+            font-size: var(--headline-medium);
+            font-weight: 300;
+            color: var(--md-green);
+        }
+
+        .mood-delta .label {
+            font-size: var(--label-small);
+            color: var(--md-on-surface-variant);
+        }
+
+        /* ============ MOOD CHECK-IN ============ */
+        .mood-checkin-view {
+            padding: 48px 24px;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .mood-checkin-title {
+            font-size: var(--headline-medium);
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        .mood-checkin-subtitle {
+            font-size: var(--body-large);
+            color: var(--md-on-surface-variant);
+            margin-bottom: 48px;
+        }
+
+        .mood-options {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin-bottom: 48px;
+        }
+
+        .mood-option {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--md-surface-container);
+            border: 2px solid transparent;
+            font-size: 32px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mood-option:hover { transform: scale(1.1); }
+
+        .mood-option.selected {
+            border-color: var(--md-primary);
+            background: var(--md-primary-container);
+            transform: scale(1.15);
+        }
+
+        .mood-labels {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 16px;
+            margin-bottom: 48px;
+        }
+
+        .mood-labels span {
+            font-size: var(--label-medium);
+            color: var(--md-outline);
+        }
+
+        /* ============ FOCUS VIEW ============ */
+        .focus-view {
+            background: var(--md-surface);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 48px 24px;
+        }
+
+        .focus-mode-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--md-primary-container);
+            color: var(--md-on-primary-container);
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-size: var(--label-medium);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 28px;
+        }
+
+        .focus-mode-badge.resistance {
+            background: var(--md-green-container);
+            color: var(--md-green);
+        }
+
+        .focus-habit-name { font-size: var(--headline-medium); font-weight: 400; margin-bottom: 8px; }
+        .focus-trigger { font-size: var(--body-large); color: var(--md-on-surface-variant); margin-bottom: 48px; }
+
+        /* Timer */
+        .timer-container {
+            position: relative;
+            width: 260px;
+            height: 260px;
+            margin: 0 auto 20px;
+        }
+
+        .timer-ring { transform: rotate(-90deg); }
+        .timer-ring-bg { fill: none; stroke: var(--md-surface-container); stroke-width: 14; }
+        .timer-ring-fill { fill: none; stroke: url(#timerGradient); stroke-width: 14; stroke-linecap: round; stroke-dasharray: 628; stroke-dashoffset: 628; transition: stroke-dashoffset 0.5s ease; }
+        .timer-ring-fill.resistance { stroke: var(--md-green); }
+
+        .timer-center {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timer-display { font-size: 64px; font-weight: 300; font-variant-numeric: tabular-nums; letter-spacing: -2px; }
+        .timer-display.resistance { color: var(--md-green); }
+        .timer-label { font-size: var(--label-medium); color: var(--md-outline); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Target Progress */
+        .target-progress {
+            margin-bottom: 48px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .target-bar {
+            height: 8px;
+            background: var(--md-surface-container);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .target-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--md-primary), var(--md-cyan));
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .target-text { font-size: var(--label-medium); color: var(--md-on-surface-variant); }
+        .target-text span { color: var(--md-primary); }
+
+        /* Focus Actions */
+        .focus-actions {
+            display: flex;
+            gap: 16px;
+            width: 100%;
+            max-width: 340px;
+        }
+
+        .focus-btn {
+            flex: 1;
+            padding: 18px;
+            border-radius: 100px;
+            font-size: var(--title-medium);
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .focus-btn-cancel { background: var(--md-surface-container); color: var(--md-on-surface); }
+        .focus-btn-done { background: linear-gradient(135deg, var(--md-primary), var(--md-tertiary)); color: var(--md-on-primary); }
+        .focus-btn-success { background: var(--md-green); color: #1C1B1F; }
+        .focus-btn-danger { background: transparent; border: 1px solid var(--md-red); color: var(--md-red); }
+
+        /* ============ COMPLETE VIEW ============ */
+        .complete-view {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 48px 24px;
+            background: linear-gradient(180deg, var(--md-surface) 0%, rgba(168, 218, 181, 0.05) 100%);
+        }
+
+        .complete-animation {
+            font-size: 88px;
+            margin-bottom: 28px;
+            animation: celebrate 0.6s ease-out;
+        }
+
+        @keyframes celebrate {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .complete-title { font-size: var(--headline-medium); font-weight: 400; margin-bottom: 8px; }
+        .complete-message { font-size: var(--body-large); color: var(--md-on-surface-variant); margin-bottom: 36px; max-width: 300px; line-height: 1.5; }
+
+        .complete-stats { display: flex; gap: 48px; margin-bottom: 36px; }
+        .complete-stat { text-align: center; }
+
+        .complete-stat .value {
+            font-size: 48px;
+            font-weight: 300;
+            background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .complete-stat .label { font-size: var(--label-medium); color: var(--md-on-surface-variant); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Share Card */
+        .share-card {
+            background: var(--md-surface-container);
+            border-radius: 24px;
+            padding: 24px;
+            width: 100%;
+            max-width: 320px;
+            margin-bottom: 28px;
+        }
+
+        .share-preview {
+            background: linear-gradient(135deg, var(--md-primary), var(--md-tertiary));
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .share-preview::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+
+        .share-day { font-size: var(--label-medium); color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+        .share-habit { font-size: var(--title-large); font-weight: 500; color: #fff; margin-bottom: 4px; }
+        .share-tag { font-size: var(--body-medium); color: rgba(255,255,255,0.7); }
+
+        .share-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--md-primary-container);
+            border: none;
+            border-radius: 100px;
+            color: var(--md-on-primary-container);
+            font-size: var(--title-medium);
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Navigation Bar */
+        .nav-indicator {
+            position: fixed;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 72px;
+            height: 4px;
+            background: var(--md-on-surface);
+            border-radius: 2px;
+            opacity: 0.3;
+        }
+
+        /* ============ ADD SECOND HABIT VIEW ============ */
+        .add-habit-view {
+            padding: 24px;
+        }
+
+        .stack-explanation {
+            background: var(--md-surface-container);
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 28px;
+            text-align: center;
+            box-shadow: var(--elevation-1);
+        }
+
+        .stack-explanation .icon { font-size: 56px; margin-bottom: 16px; }
+        .stack-explanation .title { font-size: var(--headline-small); font-weight: 400; margin-bottom: 8px; }
+        .stack-explanation .desc { font-size: var(--body-large); color: var(--md-on-surface-variant); line-height: 1.5; }
+
+        .stack-visual {
+            background: var(--md-surface-container-high);
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+
+        .stack-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 0;
+        }
+
+        .stack-item:first-child {
+            border-bottom: 1px solid var(--md-outline-variant);
+        }
+
+        .stack-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--md-primary-container);
+            color: var(--md-on-primary-container);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--label-medium);
+            font-weight: 500;
+        }
+
+        .stack-text { font-size: var(--body-large); }
+        .stack-text .habit { color: var(--md-primary); font-weight: 500; }
+
+        .stack-arrow {
+            text-align: center;
+            color: var(--md-outline);
+            font-size: var(--label-medium);
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="android-device">
+        <div class="status-bar">
+            <span>📶</span>
+            <span>🔋</span>
+            <span>10:30</span>
+        </div>
+
+        <!-- ============ ONBOARDING ============ -->
+        <div id="onboardingView" class="view active onboarding-view">
+            <div class="spacer"></div>
+            <div class="app-icon">◉</div>
+            <h1 class="onboarding-title">OneFocus</h1>
+            <p class="onboarding-subtitle">One habit. 66 days. Real change.</p>
+            <div class="science-cards">
+                <div class="science-card">
+                    <div class="icon">🧠</div>
+                    <div class="content">
+                        <div class="title">The Real Timeline</div>
+                        <div class="description">Habits take 66 days to form, not 21. We guide you through the actual science.</div>
+                        <div class="stat">66 days</div>
+                    </div>
+                </div>
+                <div class="science-card">
+                    <div class="icon">💛</div>
+                    <div class="content">
+                        <div class="title">Grace, Not Guilt</div>
+                        <div class="description">Miss a day? It's okay. Research shows it won't break your progress.</div>
+                        <div class="stat">3 grace days</div>
+                    </div>
+                </div>
+                <div class="science-card">
+                    <div class="icon">🎯</div>
+                    <div class="content">
+                        <div class="title">Trigger-Based</div>
+                        <div class="description">"After I ___" planning increases success dramatically.</div>
+                        <div class="stat">+65% success</div>
+                    </div>
+                </div>
+            </div>
+            <div class="spacer"></div>
+            <div class="btn-container">
+                <button class="md-btn" id="startBtn">Begin My Journey</button>
+            </div>
+        </div>
+
+        <!-- ============ SETUP: TYPE ============ -->
+        <div id="setupTypeView" class="view">
+            <div class="top-app-bar">
+                <button class="back-btn" id="backToOnboarding">←</button>
+            </div>
+            <div class="setup-header">
+                <div class="setup-step">Step 1 of 2</div>
+                <h2 class="setup-title">What's your habit?</h2>
+                <p class="setup-subtitle">Different habits need different tracking</p>
+            </div>
+            <div class="habit-type-grid">
+                <div class="habit-type-card selected" data-type="binary">
+                    <div class="icon">✓</div>
+                    <div class="name">Do It</div>
+                    <div class="desc">Yes or no daily</div>
+                </div>
+                <div class="habit-type-card" data-type="timed">
+                    <div class="icon">⏱</div>
+                    <div class="name">Timed</div>
+                    <div class="desc">For X minutes</div>
+                </div>
+                <div class="habit-type-card" data-type="increment">
+                    <div class="icon">📈</div>
+                    <div class="name">Build Up</div>
+                    <div class="desc">Increase over time</div>
+                </div>
+                <div class="habit-type-card" data-type="reduction">
+                    <div class="icon">📉</div>
+                    <div class="name">Cut Down</div>
+                    <div class="desc">Reduce a behavior</div>
+                </div>
+            </div>
+            <div class="field-group">
+                <div class="field-label">Name your habit</div>
+                <input type="text" class="md-text-field" id="habitNameInput" placeholder="e.g., Meditate, Run, Read...">
+            </div>
+            <div class="field-group hidden" id="metricSection">
+                <div class="field-label" id="metricLabel">Duration</div>
+                <div class="metric-control">
+                    <button class="metric-btn" id="decreaseBtn">−</button>
+                    <div class="metric-display">
+                        <span class="value" id="metricValueDisplay">5</span>
+                        <span class="unit"> min</span>
+                    </div>
+                    <button class="metric-btn" id="increaseBtn">+</button>
+                </div>
+            </div>
+            <div class="spacer"></div>
+            <div class="btn-container">
+                <button class="md-btn" id="toStep2">Continue</button>
+            </div>
+        </div>
+
+        <!-- ============ SETUP: TRIGGER ============ -->
+        <div id="setupTriggerView" class="view">
+            <div class="top-app-bar">
+                <button class="back-btn" id="backToStep1">←</button>
+            </div>
+            <div class="setup-header">
+                <div class="setup-step">Step 2 of 2</div>
+                <h2 class="setup-title">Set your trigger</h2>
+                <p class="setup-subtitle">Link it to something you already do</p>
+            </div>
+            <div class="intention-builder">
+                <div class="intention-label">
+                    <span class="badge">Implementation Intention</span>
+                </div>
+                <div class="intention-row">
+                    <span class="intention-prefix">After I</span>
+                    <input type="text" class="intention-input" id="triggerInput" placeholder="pour my coffee...">
+                </div>
+                <div class="intention-row">
+                    <span class="intention-prefix">I will</span>
+                    <span class="intention-habit" id="intentionHabitDisplay">meditate</span>
+                </div>
+            </div>
+            <div class="pro-tip">
+                <span class="icon">💡</span>
+                <span class="text"><strong>Pro tip:</strong> Link to an existing routine. "After I pour my coffee" works better than "at 7am" because the action itself becomes your reminder.</span>
+            </div>
+            <div class="spacer"></div>
+            <div class="btn-container">
+                <button class="md-btn" id="commitBtn">Start My 66-Day Journey</button>
+            </div>
+        </div>
+
+        <!-- ============ HOME VIEW ============ -->
+        <div id="homeView" class="view home-view">
+            <div class="home-header">
+                <h1 class="greeting" id="greeting">Good morning</h1>
+                <p class="date-display" id="dateDisplay">Sunday, January 26</p>
+            </div>
+
+            <!-- Journey Visualization -->
+            <div class="journey-container">
+                <div class="journey-header">
+                    <div class="journey-day-display">
+                        <div class="journey-day-number" id="dayNumber">1</div>
+                        <div class="journey-day-label">of 66 days</div>
+                    </div>
+                    <div class="journey-phase-badge" id="phaseBadge">Building Foundation</div>
+                </div>
+                <div class="journey-path">
+                    <svg viewBox="0 0 300 60" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="journeyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#D0BCFF"/>
+                                <stop offset="50%" style="stop-color:#EFB8C8"/>
+                                <stop offset="100%" style="stop-color:#A8DAB5"/>
+                            </linearGradient>
+                        </defs>
+                        <path class="journey-path-bg" d="M10,50 Q75,10 150,30 T290,20"/>
+                        <path class="journey-path-fill" id="journeyPathFill" d="M10,50 Q75,10 150,30 T290,20"/>
+                    </svg>
+                    <div class="journey-marker" id="journeyMarker"></div>
+                </div>
+                <div class="journey-milestones">
+                    <div class="milestone reached" id="milestone1"><div class="icon">🌱</div><div class="label">Start</div></div>
+                    <div class="milestone" id="milestone21"><div class="icon">🌿</div><div class="label">Day 21</div></div>
+                    <div class="milestone" id="milestone42"><div class="icon">🌳</div><div class="label">Day 42</div></div>
+                    <div class="milestone" id="milestone66"><div class="icon">✨</div><div class="label">Day 66</div></div>
+                </div>
+                <div class="grace-section">
+                    <span class="grace-label">Grace days remaining</span>
+                    <div class="grace-dots">
+                        <div class="grace-dot" id="grace1"></div>
+                        <div class="grace-dot" id="grace2"></div>
+                        <div class="grace-dot" id="grace3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Habits Section -->
+            <div class="habits-section">
+                <div class="section-title">Today's Habits</div>
+
+                <!-- Primary Habit Card -->
+                <div class="habit-card" id="habitCard1">
+                    <div class="habit-card-accent"></div>
+                    <div class="habit-card-content">
+                        <div class="habit-header">
+                            <div class="habit-type-badge" id="habitTypeBadge1"><span>✓</span><span>Daily</span></div>
+                            <div class="habit-order-badge" id="habitOrder1">1st habit</div>
+                        </div>
+                        <div class="habit-name-display" id="habitNameDisplay1">Meditate</div>
+                        <div class="habit-trigger-display">After I <span id="triggerDisplay1">pour my coffee</span></div>
+
+                        <!-- Mood Insight -->
+                        <div class="mood-insight" id="moodInsight1">
+                            <span class="emoji">📈</span>
+                            <span class="text">This habit improves your mood by <span class="highlight">+1.2 points</span> on average</span>
+                        </div>
+
+                        <button class="habit-action-btn" id="habitActionBtn1">Start Meditating</button>
+                    </div>
+                </div>
+
+                <!-- Second Habit Card (shown after day 21) -->
+                <div class="habit-card hidden" id="habitCard2">
+                    <div class="habit-card-accent"></div>
+                    <div class="habit-card-content">
+                        <div class="habit-header">
+                            <div class="habit-type-badge" id="habitTypeBadge2"><span>📝</span><span>Daily</span></div>
+                            <div class="habit-order-badge">2nd habit</div>
+                        </div>
+                        <div class="habit-name-display" id="habitNameDisplay2">Journal</div>
+                        <div class="habit-trigger-display">After I <span id="triggerDisplay2">meditate</span></div>
+
+                        <div class="mood-insight" id="moodInsight2">
+                            <span class="emoji">📈</span>
+                            <span class="text">This habit improves your mood by <span class="highlight">+0.8 points</span></span>
+                        </div>
+
+                        <button class="habit-action-btn" id="habitActionBtn2">Start Journaling</button>
+                    </div>
+                </div>
+
+                <!-- Unlock Card (hidden after day 21) -->
+                <div class="unlock-card locked" id="unlockCard">
+                    <div class="unlock-icon">🔗</div>
+                    <div class="unlock-title">Habit Stacking</div>
+                    <div class="unlock-desc">Complete 21 days to add a second habit that chains to your first</div>
+                    <div class="unlock-progress">
+                        <div class="unlock-progress-fill" id="unlockFill" style="width: 0%;"></div>
+                    </div>
+                    <div class="unlock-status" id="unlockStatus">0 / 21 days</div>
+                </div>
+            </div>
+
+            <!-- Analytics Section -->
+            <div class="analytics-section">
+                <div class="section-title">Your Progress</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="value" id="totalTimeValue">0m</div>
+                        <div class="label">Time Invested</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="value" id="streakValue">0</div>
+                        <div class="label">Current Streak</div>
+                    </div>
+                </div>
+
+                <div class="weekly-heatmap">
+                    <div class="heatmap-title">This Week</div>
+                    <div class="heatmap-days" id="heatmapDays"></div>
+                </div>
+
+                <div class="mood-chart" id="moodChart">
+                    <div class="mood-chart-title">How This Habit Makes You Feel</div>
+                    <div class="mood-comparison">
+                        <div class="mood-stat">
+                            <div class="label">Before</div>
+                            <div class="emoji" id="avgMoodBefore">😐</div>
+                            <div class="value" id="avgMoodBeforeValue">3.2</div>
+                        </div>
+                        <div class="mood-arrow">→</div>
+                        <div class="mood-stat">
+                            <div class="label">After</div>
+                            <div class="emoji" id="avgMoodAfter">😊</div>
+                            <div class="value" id="avgMoodAfterValue">4.4</div>
+                        </div>
+                        <div class="mood-delta">
+                            <div class="value" id="moodDelta">+1.2</div>
+                            <div class="label">Mood Boost</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============ MOOD CHECK-IN (BEFORE) ============ -->
+        <div id="moodBeforeView" class="view mood-checkin-view">
+            <div class="spacer"></div>
+            <h2 class="mood-checkin-title">How are you feeling right now?</h2>
+            <p class="mood-checkin-subtitle">Quick check before you start</p>
+            <div class="mood-options" id="moodBeforeOptions">
+                <div class="mood-option" data-mood="1">😫</div>
+                <div class="mood-option" data-mood="2">😕</div>
+                <div class="mood-option" data-mood="3">😐</div>
+                <div class="mood-option" data-mood="4">🙂</div>
+                <div class="mood-option" data-mood="5">😊</div>
+            </div>
+            <div class="mood-labels">
+                <span>Low energy</span>
+                <span>Great</span>
+            </div>
+            <div class="spacer"></div>
+            <div class="btn-container">
+                <button class="md-btn" id="continueMoodBefore">Continue</button>
+            </div>
+        </div>
+
+        <!-- ============ FOCUS VIEW ============ -->
+        <div id="focusView" class="view focus-view">
+            <div class="focus-mode-badge" id="focusModeBadge">
+                <span>⏱</span>
+                <span id="focusModeText">Focus Session</span>
+            </div>
+            <h2 class="focus-habit-name" id="focusHabitName">Meditate</h2>
+            <p class="focus-trigger" id="focusTrigger">After I pour my coffee</p>
+            <div class="timer-container">
+                <svg class="timer-ring" width="260" height="260" viewBox="0 0 240 240">
+                    <defs>
+                        <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#D0BCFF"/>
+                            <stop offset="100%" style="stop-color:#EFB8C8"/>
+                        </linearGradient>
+                    </defs>
+                    <circle class="timer-ring-bg" cx="120" cy="120" r="100"/>
+                    <circle class="timer-ring-fill" id="timerRingFill" cx="120" cy="120" r="100"/>
+                </svg>
+                <div class="timer-center">
+                    <div class="timer-display" id="timerDisplay">00:00</div>
+                    <div class="timer-label" id="timerLabel">Time Focused</div>
+                </div>
+            </div>
+            <div class="target-progress" id="targetProgress">
+                <div class="target-bar"><div class="target-fill" id="targetFill"></div></div>
+                <div class="target-text"><span id="currentMins">0</span> / <span id="targetMins">5</span> min</div>
+            </div>
+            <div class="focus-actions" id="focusActions">
+                <button class="focus-btn focus-btn-cancel" id="cancelBtn">Cancel</button>
+                <button class="focus-btn focus-btn-done" id="doneBtn">Done ✓</button>
+            </div>
+            <div class="focus-actions hidden" id="resistanceActions">
+                <button class="focus-btn focus-btn-danger" id="gaveInBtn">I gave in</button>
+                <button class="focus-btn focus-btn-success" id="resistedBtn">Still strong 💪</button>
+            </div>
+        </div>
+
+        <!-- ============ MOOD CHECK-IN (AFTER) ============ -->
+        <div id="moodAfterView" class="view mood-checkin-view">
+            <div class="spacer"></div>
+            <h2 class="mood-checkin-title">How do you feel now?</h2>
+            <p class="mood-checkin-subtitle">After completing <span id="completedHabitName">Meditate</span></p>
+            <div class="mood-options" id="moodAfterOptions">
+                <div class="mood-option" data-mood="1">😫</div>
+                <div class="mood-option" data-mood="2">😕</div>
+                <div class="mood-option" data-mood="3">😐</div>
+                <div class="mood-option" data-mood="4">🙂</div>
+                <div class="mood-option" data-mood="5">😊</div>
+            </div>
+            <div class="mood-labels">
+                <span>Low energy</span>
+                <span>Great</span>
+            </div>
+            <div class="spacer"></div>
+            <div class="btn-container">
+                <button class="md-btn" id="continueMoodAfter">Continue</button>
+            </div>
+        </div>
+
+        <!-- ============ COMPLETE VIEW ============ -->
+        <div id="completeView" class="view complete-view">
+            <div class="complete-animation" id="completeEmoji">✨</div>
+            <h2 class="complete-title" id="completeTitle">You did it!</h2>
+            <p class="complete-message" id="completeMessage">Day 1 complete. You showed up for yourself today.</p>
+            <div class="complete-stats">
+                <div class="complete-stat">
+                    <div class="value" id="statDays">1</div>
+                    <div class="label">Days</div>
+                </div>
+                <div class="complete-stat">
+                    <div class="value" id="statTime">5m</div>
+                    <div class="label">Today</div>
+                </div>
+            </div>
+            <div class="share-card">
+                <div class="share-preview">
+                    <div class="share-day">Day <span id="shareDay">1</span> of 66</div>
+                    <div class="share-habit" id="shareHabit">Meditate</div>
+                    <div class="share-tag">Building my habit ◉</div>
+                </div>
+                <button class="share-btn" id="shareBtn"><span>↗</span> Share Progress</button>
+            </div>
+            <div class="btn-container" style="width: 100%; max-width: 320px;">
+                <button class="md-btn" id="continueBtn">Continue</button>
+            </div>
+        </div>
+
+        <!-- ============ ADD SECOND HABIT VIEW ============ -->
+        <div id="addSecondHabitView" class="view add-habit-view">
+            <div class="top-app-bar">
+                <button class="back-btn" id="backFromAddHabit">←</button>
+            </div>
+            <div class="stack-explanation">
+                <div class="icon">🔗</div>
+                <div class="title">Habit Stacking Unlocked!</div>
+                <div class="desc">You've proven 21 days of consistency. Now add a second habit that chains directly to your first.</div>
+                <div class="stack-visual">
+                    <div class="stack-item">
+                        <div class="stack-number">1</div>
+                        <div class="stack-text">After I pour my coffee, I will <span class="habit" id="stackHabit1">meditate</span></div>
+                    </div>
+                    <div class="stack-arrow">↓ then</div>
+                    <div class="stack-item">
+                        <div class="stack-number">2</div>
+                        <div class="stack-text">After I <span class="habit" id="stackTrigger2">meditate</span>, I will <span class="habit" id="stackHabit2">journal</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="field-group">
+                <div class="field-label">Second habit name</div>
+                <input type="text" class="md-text-field" id="secondHabitInput" placeholder="e.g., Journal, Stretch, Read...">
+            </div>
+            <div class="spacer"></div>
+            <div class="btn-container">
+                <button class="md-btn" id="addSecondHabitBtn">Add Second Habit</button>
+            </div>
+        </div>
+
+        <div class="nav-indicator"></div>
+    </div>
+
+    <script>
+        // ============ STATE ============
+        const defaultState = {
+            onboarded: false,
+            habit: { name: '', type: 'binary', trigger: '', startValue: 5, changeValue: 1, currentValue: 5 },
+            secondHabit: null,
+            journey: { startDate: null, currentDay: 0, completedDays: [], graceDaysUsed: 0, totalFocusTime: 0 },
+            moods: [], // { date, habitIndex, before, after }
+            lastActiveDate: null
+        };
+
+        let state = JSON.parse(JSON.stringify(defaultState));
+        let focusTimer = null;
+        let focusSeconds = 0;
+        let metricValue = 5;
+        let currentMoodBefore = null;
+        let currentHabitIndex = 0;
+
+        // ============ PERSISTENCE ============
+        function loadState() {
+            const saved = localStorage.getItem('oneFocusAndroidv3');
+            if (saved) {
+                state = { ...defaultState, ...JSON.parse(saved) };
+                state.habit = { ...defaultState.habit, ...state.habit };
+                state.journey = { ...defaultState.journey, ...state.journey };
+                if (!state.moods) state.moods = [];
+            }
+            checkNewDay();
+        }
+
+        function saveState() {
+            localStorage.setItem('oneFocusAndroidv3', JSON.stringify(state));
+        }
+
+        function checkNewDay() {
+            if (!state.journey.startDate) return;
+            const startDate = new Date(state.journey.startDate);
+            const today = new Date();
+            const diffTime = today - startDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            state.journey.currentDay = Math.min(diffDays, 66);
+
+            if (state.habit.type === 'increment') {
+                state.habit.currentValue = state.habit.startValue + (state.journey.currentDay - 1) * state.habit.changeValue;
+            } else if (state.habit.type === 'reduction') {
+                state.habit.currentValue = Math.max(1, state.habit.startValue - (state.journey.currentDay - 1) * state.habit.changeValue);
+            }
+            saveState();
+        }
+
+        // ============ VIEWS ============
+        const views = {
+            onboarding: document.getElementById('onboardingView'),
+            setupType: document.getElementById('setupTypeView'),
+            setupTrigger: document.getElementById('setupTriggerView'),
+            home: document.getElementById('homeView'),
+            moodBefore: document.getElementById('moodBeforeView'),
+            focus: document.getElementById('focusView'),
+            moodAfter: document.getElementById('moodAfterView'),
+            complete: document.getElementById('completeView'),
+            addSecondHabit: document.getElementById('addSecondHabitView')
+        };
+
+        function showView(name) {
+            Object.values(views).forEach(v => v.classList.remove('active'));
+            views[name].classList.add('active');
+        }
+
+        // ============ RENDER ============
+        function render() {
+            if (!state.onboarded) return showView('onboarding');
+            if (!state.habit.name) return showView('setupType');
+            showView('home');
+            renderHome();
+        }
+
+        function renderHome() {
+            const day = state.journey.currentDay;
+            const today = new Date().toDateString();
+            const completedToday = state.journey.completedDays.includes(today);
+            const hasSecondHabit = state.secondHabit !== null;
+            const canUnlock = day >= 21;
+
+            // Greeting
+            const hour = new Date().getHours();
+            document.getElementById('greeting').textContent = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+
+            // Date
+            document.getElementById('dateDisplay').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+
+            // Journey
+            document.getElementById('dayNumber').textContent = day;
+            let phase = 'Building Foundation';
+            if (day > 42) phase = 'Cementing Habit';
+            else if (day > 21) phase = 'Strengthening';
+            document.getElementById('phaseBadge').textContent = phase;
+
+            // Path
+            const progress = day / 66;
+            document.getElementById('journeyPathFill').style.strokeDashoffset = 320 - (progress * 320);
+            const marker = document.getElementById('journeyMarker');
+            marker.style.left = `${10 + (progress * 280)}px`;
+            marker.style.top = `${50 - Math.sin(progress * Math.PI) * 30}px`;
+
+            // Milestones
+            document.getElementById('milestone1').classList.toggle('reached', day >= 1);
+            document.getElementById('milestone21').classList.toggle('reached', day >= 21);
+            document.getElementById('milestone21').classList.toggle('current', day >= 1 && day < 21);
+            document.getElementById('milestone42').classList.toggle('reached', day >= 42);
+            document.getElementById('milestone42').classList.toggle('current', day >= 21 && day < 42);
+            document.getElementById('milestone66').classList.toggle('reached', day >= 66);
+            document.getElementById('milestone66').classList.toggle('current', day >= 42 && day < 66);
+
+            // Grace
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`grace${i}`).classList.toggle('used', i <= state.journey.graceDaysUsed);
+            }
+
+            // Primary habit card
+            document.getElementById('habitNameDisplay1').textContent = state.habit.name;
+            document.getElementById('triggerDisplay1').textContent = state.habit.trigger;
+            const typeIcons = { binary: '✓', timed: '⏱', increment: '📈', reduction: '📉' };
+            document.getElementById('habitTypeBadge1').innerHTML = `<span>${typeIcons[state.habit.type]}</span><span>${state.habit.type === 'binary' ? 'Daily' : state.habit.type}</span>`;
+
+            const actionBtn1 = document.getElementById('habitActionBtn1');
+            const habitCard1 = document.getElementById('habitCard1');
+            if (completedToday) {
+                actionBtn1.textContent = `You ${getVerbPast(state.habit.name)} today ✓`;
+                actionBtn1.classList.add('completed');
+                habitCard1.classList.add('completed');
+            } else {
+                actionBtn1.textContent = state.habit.type === 'reduction' ? 'Start Resisting' : `Start ${state.habit.name}`;
+                actionBtn1.classList.remove('completed');
+                habitCard1.classList.remove('completed');
+            }
+
+            // Mood insight
+            const moodData = calculateMoodDelta(0);
+            if (moodData.count > 0) {
+                document.getElementById('moodInsight1').classList.remove('hidden');
+                document.getElementById('moodInsight1').querySelector('.highlight').textContent = `+${moodData.delta.toFixed(1)} points`;
+            } else {
+                document.getElementById('moodInsight1').classList.add('hidden');
+            }
+
+            // Second habit
+            if (hasSecondHabit) {
+                document.getElementById('habitCard2').classList.remove('hidden');
+                document.getElementById('unlockCard').classList.add('hidden');
+                document.getElementById('habitNameDisplay2').textContent = state.secondHabit.name;
+                document.getElementById('triggerDisplay2').textContent = state.habit.name.toLowerCase();
+                // Check if second habit completed
+                const secondCompleted = state.journey.completedDays.includes(today + '_2');
+                const actionBtn2 = document.getElementById('habitActionBtn2');
+                const habitCard2 = document.getElementById('habitCard2');
+                if (secondCompleted) {
+                    actionBtn2.textContent = `You ${getVerbPast(state.secondHabit.name)} today ✓`;
+                    actionBtn2.classList.add('completed');
+                    habitCard2.classList.add('completed');
+                } else {
+                    actionBtn2.textContent = `Start ${state.secondHabit.name}`;
+                    actionBtn2.classList.remove('completed');
+                    habitCard2.classList.remove('completed');
+                }
+            } else if (canUnlock) {
+                document.getElementById('habitCard2').classList.add('hidden');
+                document.getElementById('unlockCard').classList.remove('hidden');
+                document.getElementById('unlockCard').classList.remove('locked');
+                document.getElementById('unlockStatus').textContent = 'Tap to add';
+                document.getElementById('unlockFill').style.width = '100%';
+            } else {
+                document.getElementById('habitCard2').classList.add('hidden');
+                document.getElementById('unlockCard').classList.remove('hidden');
+                document.getElementById('unlockCard').classList.add('locked');
+                document.getElementById('unlockFill').style.width = `${(state.journey.completedDays.length / 21) * 100}%`;
+                document.getElementById('unlockStatus').textContent = `${state.journey.completedDays.length} / 21 days`;
+            }
+
+            // Analytics
+            const totalMins = Math.floor(state.journey.totalFocusTime / 60);
+            document.getElementById('totalTimeValue').textContent = totalMins >= 60 ? `${Math.floor(totalMins/60)}h ${totalMins%60}m` : `${totalMins}m`;
+
+            // Streak
+            let streak = 0;
+            for (let i = 0; i < 66; i++) {
+                const checkDate = new Date();
+                checkDate.setDate(checkDate.getDate() - i);
+                if (state.journey.completedDays.includes(checkDate.toDateString())) streak++;
+                else break;
+            }
+            document.getElementById('streakValue').textContent = streak;
+
+            renderHeatmap();
+            renderMoodChart();
+        }
+
+        function getVerbPast(name) {
+            const n = name.toLowerCase();
+            if (n.includes('meditat')) return 'meditated';
+            if (n.includes('run')) return 'ran';
+            if (n.includes('read')) return 'read';
+            if (n.includes('journal')) return 'journaled';
+            if (n.includes('exercis')) return 'exercised';
+            return 'did ' + n;
+        }
+
+        function calculateMoodDelta(habitIndex) {
+            const habitMoods = state.moods.filter(m => m.habitIndex === habitIndex);
+            if (habitMoods.length === 0) return { delta: 0, count: 0 };
+            const avgBefore = habitMoods.reduce((sum, m) => sum + m.before, 0) / habitMoods.length;
+            const avgAfter = habitMoods.reduce((sum, m) => sum + m.after, 0) / habitMoods.length;
+            return { delta: avgAfter - avgBefore, avgBefore, avgAfter, count: habitMoods.length };
+        }
+
+        function renderHeatmap() {
+            const container = document.getElementById('heatmapDays');
+            container.innerHTML = '';
+            const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            for (let i = 0; i < 7; i++) {
+                const date = new Date();
+                date.setDate(date.getDate() - dayOfWeek + i);
+                const dateStr = date.toDateString();
+                const isCompleted = state.journey.completedDays.includes(dateStr);
+                const isToday = dateStr === today.toDateString();
+                const dayEl = document.createElement('div');
+                dayEl.className = 'heatmap-day';
+                dayEl.innerHTML = `<div class="label">${days[i]}</div><div class="dot ${isCompleted ? 'completed' : ''} ${isToday ? 'today' : ''}"></div>`;
+                container.appendChild(dayEl);
+            }
+        }
+
+        function renderMoodChart() {
+            const moodData = calculateMoodDelta(0);
+            if (moodData.count === 0) {
+                document.getElementById('moodChart').classList.add('hidden');
+                return;
+            }
+            document.getElementById('moodChart').classList.remove('hidden');
+            const emojis = ['', '😫', '😕', '😐', '🙂', '😊'];
+            document.getElementById('avgMoodBeforeValue').textContent = moodData.avgBefore.toFixed(1);
+            document.getElementById('avgMoodAfterValue').textContent = moodData.avgAfter.toFixed(1);
+            document.getElementById('avgMoodBefore').textContent = emojis[Math.round(moodData.avgBefore)] || '😐';
+            document.getElementById('avgMoodAfter').textContent = emojis[Math.round(moodData.avgAfter)] || '😊';
+            document.getElementById('moodDelta').textContent = `+${moodData.delta.toFixed(1)}`;
+        }
+
+        // ============ SETUP FLOW ============
+        let selectedType = 'binary';
+
+        document.querySelectorAll('.habit-type-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.habit-type-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedType = card.dataset.type;
+                document.getElementById('metricSection').classList.toggle('hidden', selectedType === 'binary');
+                if (selectedType === 'timed') document.getElementById('metricLabel').textContent = 'Session Length';
+                else if (selectedType === 'increment') document.getElementById('metricLabel').textContent = 'Starting Duration';
+                else document.getElementById('metricLabel').textContent = 'Current Duration';
+            });
+        });
+
+        document.getElementById('decreaseBtn').addEventListener('click', () => { if (metricValue > 1) document.getElementById('metricValueDisplay').textContent = --metricValue; });
+        document.getElementById('increaseBtn').addEventListener('click', () => { document.getElementById('metricValueDisplay').textContent = ++metricValue; });
+
+        document.getElementById('startBtn').addEventListener('click', () => { state.onboarded = true; saveState(); showView('setupType'); });
+        document.getElementById('backToOnboarding').addEventListener('click', () => showView('onboarding'));
+        document.getElementById('toStep2').addEventListener('click', () => {
+            const name = document.getElementById('habitNameInput').value.trim();
+            if (!name) return alert('Please name your habit');
+            state.habit.name = name;
+            state.habit.type = selectedType;
+            state.habit.startValue = metricValue;
+            state.habit.currentValue = metricValue;
+            document.getElementById('intentionHabitDisplay').textContent = name.toLowerCase();
+            showView('setupTrigger');
+        });
+        document.getElementById('backToStep1').addEventListener('click', () => showView('setupType'));
+        document.getElementById('commitBtn').addEventListener('click', () => {
+            const trigger = document.getElementById('triggerInput').value.trim();
+            if (!trigger) return alert('Please set your trigger');
+            state.habit.trigger = trigger;
+            state.journey.startDate = new Date().toDateString();
+            state.journey.currentDay = 1;
+            saveState();
+            render();
+        });
+
+        // ============ HABIT ACTIONS ============
+        document.getElementById('habitActionBtn1').addEventListener('click', () => {
+            const today = new Date().toDateString();
+            if (state.journey.completedDays.includes(today)) return;
+            currentHabitIndex = 0;
+            showView('moodBefore');
+        });
+
+        document.getElementById('habitActionBtn2').addEventListener('click', () => {
+            const today = new Date().toDateString();
+            if (state.journey.completedDays.includes(today + '_2')) return;
+            currentHabitIndex = 1;
+            showView('moodBefore');
+        });
+
+        document.getElementById('unlockCard').addEventListener('click', () => {
+            if (state.journey.currentDay >= 21 && !state.secondHabit) {
+                document.getElementById('stackHabit1').textContent = state.habit.name.toLowerCase();
+                document.getElementById('stackTrigger2').textContent = state.habit.name.toLowerCase();
+                showView('addSecondHabit');
+            }
+        });
+
+        // ============ MOOD BEFORE ============
+        document.querySelectorAll('#moodBeforeOptions .mood-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                document.querySelectorAll('#moodBeforeOptions .mood-option').forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
+                currentMoodBefore = parseInt(opt.dataset.mood);
+            });
+        });
+
+        document.getElementById('continueMoodBefore').addEventListener('click', () => {
+            if (!currentMoodBefore) return alert('Please select how you feel');
+            const habit = currentHabitIndex === 0 ? state.habit : state.secondHabit;
+            if (habit.type === 'binary') {
+                completeHabit(0);
+            } else {
+                startFocus();
+            }
+        });
+
+        // ============ FOCUS ============
+        function startFocus() {
+            focusSeconds = 0;
+            const habit = currentHabitIndex === 0 ? state.habit : state.secondHabit;
+            const isReduction = habit.type === 'reduction';
+
+            document.getElementById('focusHabitName').textContent = habit.name;
+            document.getElementById('focusTrigger').textContent = currentHabitIndex === 0 ? `After I ${habit.trigger}` : `After I ${state.habit.name.toLowerCase()}`;
+
+            const badge = document.getElementById('focusModeBadge');
+            const timerDisp = document.getElementById('timerDisplay');
+            const timerRing = document.getElementById('timerRingFill');
+
+            if (isReduction) {
+                badge.classList.add('resistance');
+                document.getElementById('focusModeText').textContent = 'Resistance Mode';
+                timerDisp.classList.add('resistance');
+                timerRing.classList.add('resistance');
+                document.getElementById('timerLabel').textContent = 'Time Resisted';
+                document.getElementById('focusActions').classList.add('hidden');
+                document.getElementById('resistanceActions').classList.remove('hidden');
+            } else {
+                badge.classList.remove('resistance');
+                document.getElementById('focusModeText').textContent = habit.type === 'timed' ? 'Timed Session' : 'Building Up';
+                timerDisp.classList.remove('resistance');
+                timerRing.classList.remove('resistance');
+                document.getElementById('timerLabel').textContent = 'Time Focused';
+                document.getElementById('focusActions').classList.remove('hidden');
+                document.getElementById('resistanceActions').classList.add('hidden');
+            }
+
+            const targetMins = habit.type === 'timed' ? habit.startValue : habit.currentValue;
+            document.getElementById('targetMins').textContent = targetMins;
+            document.getElementById('targetProgress').classList.toggle('hidden', habit.type === 'binary');
+
+            updateFocusDisplay();
+            showView('focus');
+            focusTimer = setInterval(() => { focusSeconds++; updateFocusDisplay(); }, 1000);
+        }
+
+        function updateFocusDisplay() {
+            const mins = Math.floor(focusSeconds / 60);
+            const secs = focusSeconds % 60;
+            document.getElementById('timerDisplay').textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            const habit = currentHabitIndex === 0 ? state.habit : state.secondHabit;
+            const targetMins = habit.type === 'timed' ? habit.startValue : habit.currentValue;
+            const progress = Math.min(focusSeconds / 60 / targetMins, 1);
+            document.getElementById('timerRingFill').style.strokeDashoffset = 628 - (progress * 628);
+            document.getElementById('targetFill').style.width = `${progress * 100}%`;
+            document.getElementById('currentMins').textContent = mins;
+        }
+
+        function stopFocus() { if (focusTimer) { clearInterval(focusTimer); focusTimer = null; } }
+
+        document.getElementById('cancelBtn').addEventListener('click', () => { stopFocus(); showView('home'); });
+        document.getElementById('doneBtn').addEventListener('click', () => { stopFocus(); showMoodAfter(); });
+        document.getElementById('resistedBtn').addEventListener('click', () => { stopFocus(); showMoodAfter(); });
+        document.getElementById('gaveInBtn').addEventListener('click', () => { stopFocus(); showMoodAfter(); });
+
+        function showMoodAfter() {
+            const habit = currentHabitIndex === 0 ? state.habit : state.secondHabit;
+            document.getElementById('completedHabitName').textContent = habit.name;
+            document.querySelectorAll('#moodAfterOptions .mood-option').forEach(o => o.classList.remove('selected'));
+            showView('moodAfter');
+        }
+
+        // ============ MOOD AFTER ============
+        document.querySelectorAll('#moodAfterOptions .mood-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                document.querySelectorAll('#moodAfterOptions .mood-option').forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
+            });
+        });
+
+        document.getElementById('continueMoodAfter').addEventListener('click', () => {
+            const selectedAfter = document.querySelector('#moodAfterOptions .mood-option.selected');
+            if (!selectedAfter) return alert('Please select how you feel');
+            const moodAfter = parseInt(selectedAfter.dataset.mood);
+            state.moods.push({ date: new Date().toDateString(), habitIndex: currentHabitIndex, before: currentMoodBefore, after: moodAfter });
+            completeHabit(focusSeconds);
+        });
+
+        function completeHabit(seconds) {
+            const today = new Date().toDateString();
+            const key = currentHabitIndex === 0 ? today : today + '_2';
+            if (!state.journey.completedDays.includes(key)) state.journey.completedDays.push(key);
+            state.journey.totalFocusTime += seconds;
+            state.lastActiveDate = today;
+            saveState();
+            showComplete(seconds);
+        }
+
+        function showComplete(seconds) {
+            const day = state.journey.currentDay;
+            const mins = Math.floor(seconds / 60);
+            const habit = currentHabitIndex === 0 ? state.habit : state.secondHabit;
+
+            let emoji = '✨';
+            if (day === 1) emoji = '🎉';
+            else if (day === 7) emoji = '🔥';
+            else if (day === 21) emoji = '🌿';
+            else if (day === 42) emoji = '🌳';
+            else if (day === 66) emoji = '🏆';
+            document.getElementById('completeEmoji').textContent = emoji;
+
+            document.getElementById('completeTitle').textContent = day === 1 ? 'You did it!' : `Day ${day} done!`;
+
+            const messages = ["You showed up for yourself today.", "One more day in the books.", "Progress over perfection.", "Your future self thanks you."];
+            document.getElementById('completeMessage').textContent = day === 1 ? "Day 1 complete. The journey begins." : messages[Math.floor(Math.random() * messages.length)];
+
+            document.getElementById('statDays').textContent = state.journey.completedDays.filter(d => !d.includes('_')).length;
+            document.getElementById('statTime').textContent = mins > 0 ? `${mins}m` : '✓';
+            document.getElementById('shareDay').textContent = day;
+            document.getElementById('shareHabit').textContent = habit.name;
+
+            currentMoodBefore = null;
+            showView('complete');
+        }
+
+        document.getElementById('continueBtn').addEventListener('click', render);
+        document.getElementById('shareBtn').addEventListener('click', () => {
+            const habit = currentHabitIndex === 0 ? state.habit : state.secondHabit;
+            const text = `Day ${state.journey.currentDay} of 66: ${habit.name} ✓\n\nBuilding my habit with OneFocus ◉`;
+            if (navigator.share) navigator.share({ text });
+            else { navigator.clipboard.writeText(text); alert('Copied!'); }
+        });
+
+        // ============ ADD SECOND HABIT ============
+        document.getElementById('backFromAddHabit').addEventListener('click', render);
+        document.getElementById('secondHabitInput').addEventListener('input', (e) => {
+            document.getElementById('stackHabit2').textContent = e.target.value.toLowerCase() || 'journal';
+        });
+        document.getElementById('addSecondHabitBtn').addEventListener('click', () => {
+            const name = document.getElementById('secondHabitInput').value.trim();
+            if (!name) return alert('Please name your second habit');
+            state.secondHabit = { name, type: 'binary', trigger: state.habit.name.toLowerCase() };
+            saveState();
+            render();
+        });
+
+        // ============ RESET ============
+        function resetApp() {
+            if (confirm('Reset all data?')) {
+                localStorage.removeItem('oneFocusAndroidv3');
+                state = JSON.parse(JSON.stringify(defaultState));
+                metricValue = 5;
+                document.getElementById('metricValueDisplay').textContent = '5';
+                document.getElementById('habitNameInput').value = '';
+                document.getElementById('triggerInput').value = '';
+                document.getElementById('secondHabitInput').value = '';
+                render();
+            }
+        }
+
+        const resetBtn = document.createElement('button');
+        resetBtn.textContent = '🔄';
+        resetBtn.style.cssText = 'position:fixed;bottom:50px;right:20px;width:48px;height:48px;border-radius:24px;background:var(--md-surface-container);border:1px solid var(--md-outline-variant);color:var(--md-on-surface-variant);font-size:18px;cursor:pointer;z-index:1000;';
+        resetBtn.addEventListener('click', resetApp);
+        document.body.appendChild(resetBtn);
+
+        // ============ INIT ============
+        loadState();
+        render();
+    </script>
+</body>
+</html>
