@@ -11,4 +11,9 @@ sealed class Destination(val route: String) {
     
     // Main App
     data object Home : Destination("home")
+    data object Focus : Destination("focus")
+    data object MoodBefore : Destination("mood_before")
+    data object MoodAfter : Destination("mood_after")
+    data object Celebration : Destination("celebration")
+    data object AddSecondHabit : Destination("add_second_habit")
 }

@@ -25,12 +25,15 @@ class JourneyRepository @Inject constructor(
     }
 
     suspend fun markDayComplete(habitIndex: Int = 0) {
-        // This is simplified - in real implementation you'd get current journey first
+        val journey = journeyDao.getJourneyOnce() ?: return
         val today = LocalDate.now().toString()
         val dateKey = if (habitIndex == 0) today else "${today}_2"
-        
-        // Would need to fetch current journey, update completedDays, then save
-        // For now this is a placeholder
+
+        if (!journey.completedDays.contains(dateKey)) {
+            val updatedDays = journey.completedDays + dateKey
+            val updated = journey.copy(completedDays = updatedDays)
+            journeyDao.update(updated)
+        }
     }
 
     suspend fun useFlexDay(journey: Journey) {

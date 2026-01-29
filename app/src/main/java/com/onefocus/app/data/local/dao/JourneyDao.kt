@@ -9,6 +9,9 @@ interface JourneyDao {
     @Query("SELECT * FROM journey LIMIT 1")
     fun getJourney(): Flow<Journey?>
 
+    @Query("SELECT * FROM journey LIMIT 1")
+    suspend fun getJourneyOnce(): Journey?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(journey: Journey)
 

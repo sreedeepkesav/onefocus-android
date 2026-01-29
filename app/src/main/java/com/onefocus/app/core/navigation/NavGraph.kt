@@ -17,6 +17,11 @@ import com.onefocus.app.core.design.Surface
 import com.onefocus.app.data.model.enums.HabitType
 import com.onefocus.app.data.model.enums.TriggerType
 import com.onefocus.app.feature.onboarding.*
+import com.onefocus.app.feature.home.HomeScreen
+import com.onefocus.app.feature.focus.FocusScreen
+import com.onefocus.app.feature.focus.CelebrationScreen
+import com.onefocus.app.feature.mood.MoodBeforeScreen
+import com.onefocus.app.feature.mood.MoodAfterScreen
 
 @Composable
 fun OneFocusNavGraph(
@@ -122,25 +127,67 @@ fun OneFocusNavGraph(
             )
         }
 
-        // Home Screen (placeholder for now)
+        // Home Screen
         composable(Destination.Home.route) {
-            HomeScreenPlaceholder()
+            HomeScreen(
+                onNavigateToFocus = {
+                    navController.navigate(Destination.Focus.route)
+                },
+                onNavigateToAddSecondHabit = {
+                    navController.navigate(Destination.AddSecondHabit.route)
+                }
+            )
         }
-    }
-}
 
-@Composable
-fun HomeScreenPlaceholder() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Surface),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "Home Screen Coming Soon",
-            style = MaterialTheme.typography.headlineMedium,
-            color = OnSurface
-        )
+        // Focus Mode
+        composable(Destination.Focus.route) {
+            FocusScreen(
+                onComplete = {
+                    navController.navigate(Destination.MoodBefore.route)
+                }
+            )
+        }
+
+        // Mood Before
+        composable(Destination.MoodBefore.route) {
+            MoodBeforeScreen(
+                onContinue = {
+                    navController.navigate(Destination.MoodAfter.route)
+                }
+            )
+        }
+
+        // Mood After
+        composable(Destination.MoodAfter.route) {
+            MoodAfterScreen(
+                onContinue = {
+                    navController.navigate(Destination.Celebration.route)
+                }
+            )
+        }
+
+        // Celebration
+        composable(Destination.Celebration.route) {
+            // Get journey data from HomeViewModel or pass through navigation
+            val homeViewModel: com.onefocus.app.feature.home.HomeViewModel = hiltViewModel()
+            val homeState by homeViewModel.state.collectAsState()
+
+            CelebrationScreen(
+                dayNumber = homeState.journey?.currentDay ?: 1,
+                streak = homeState.journey?.currentStreak ?: 1,
+                onBackToHome = {
+                    navController.navigate(Destination.Home.route) {
+                        popUpTo(Destination.Home.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        // Add Second Habit (placeholder - reuses onboarding for now)
+        composable(Destination.AddSecondHabit.route) {
+            // For now, navigate back to habit type selection
+            // In the future, this would be a dedicated flow
+            navController.navigate(Destination.HabitType.route)
+        }
     }
 }
