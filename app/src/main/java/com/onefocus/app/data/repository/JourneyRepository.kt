@@ -23,6 +23,10 @@ class JourneyRepository @Inject constructor(
     suspend fun updateJourney(journey: Journey) {
         journeyDao.update(journey)
     }
+    
+    suspend fun insertJourney(journey: Journey) {
+        journeyDao.insert(journey)
+    }
 
     suspend fun markDayComplete(habitIndex: Int = 0) {
         val journey = journeyDao.getJourneyOnce() ?: return

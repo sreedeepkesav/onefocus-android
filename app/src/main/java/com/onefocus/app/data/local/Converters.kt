@@ -2,6 +2,7 @@ package com.onefocus.app.data.local
 
 import androidx.room.TypeConverter
 import com.onefocus.app.data.model.enums.HabitType
+import com.onefocus.app.data.model.enums.JourneyStatus
 import com.onefocus.app.data.model.enums.TriggerType
 
 class Converters {
@@ -16,6 +17,12 @@ class Converters {
 
     @TypeConverter
     fun toTriggerType(value: String): TriggerType = TriggerType.valueOf(value)
+
+    @TypeConverter
+    fun fromJourneyStatus(value: JourneyStatus): String = value.name
+
+    @TypeConverter
+    fun toJourneyStatus(value: String): JourneyStatus = JourneyStatus.valueOf(value)
 
     @TypeConverter
     fun fromStringList(value: List<String>): String = value.joinToString(",")

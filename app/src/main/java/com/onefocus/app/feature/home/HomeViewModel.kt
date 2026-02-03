@@ -20,7 +20,8 @@ data class HomeState(
     val isLoading: Boolean = true,
     val canAddSecondHabit: Boolean = false,
     val isSecondHabitUnlocked: Boolean = false,
-    val shouldShowReflectionPrompt: Boolean = false
+    val shouldShowReflectionPrompt: Boolean = false,
+    val showFailureAnalysis: Boolean = false
 )
 
 @HiltViewModel

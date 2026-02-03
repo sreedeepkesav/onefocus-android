@@ -13,6 +13,7 @@ import com.onefocus.app.feature.mood.MoodAfterScreen
 import com.onefocus.app.feature.analytics.AnalyticsScreen
 import com.onefocus.app.feature.settings.SettingsScreen
 import com.onefocus.app.feature.secondhabit.AddSecondHabitScreen
+import com.onefocus.app.feature.failureanalysis.FailureAnalysisScreen
 
 @Composable
 fun OneFocusNavGraph(
@@ -133,6 +134,9 @@ fun OneFocusNavGraph(
                 onNavigateToSettings = {
                     navController.navigate(Destination.Settings.route)
                 },
+                onNavigateToFailureAnalysis = {
+                    navController.navigate(Destination.FailureAnalysis.route)
+                },
                 onNavigateToReflection = {
                     navController.navigate(Destination.Reflection.route)
                 }
@@ -209,6 +213,17 @@ fun OneFocusNavGraph(
             com.onefocus.app.feature.reflection.ReflectionScreen(
                 onNavigateBack = {
                     navController.popBackStack()
+                }
+            )
+        }
+
+        // Failure Analysis Screen
+        composable(Destination.FailureAnalysis.route) {
+            FailureAnalysisScreen(
+                onNavigateToHome = {
+                    navController.navigate(Destination.Home.route) {
+                        popUpTo(Destination.Home.route) { inclusive = true }
+                    }
                 }
             )
         }

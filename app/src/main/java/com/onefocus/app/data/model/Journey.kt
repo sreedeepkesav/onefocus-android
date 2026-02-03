@@ -2,6 +2,7 @@ package com.onefocus.app.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.onefocus.app.data.model.enums.JourneyStatus
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
@@ -11,7 +12,8 @@ data class Journey(
     val startDate: Long = System.currentTimeMillis(),
     val completedDays: List<String> = emptyList(),
     val flexDaysUsed: Int = 0,
-    val totalFocusTimeSeconds: Int = 0
+    val totalFocusTimeSeconds: Int = 0,
+    val status: JourneyStatus = JourneyStatus.ACTIVE
 ) {
     val currentDay: Int
         get() {

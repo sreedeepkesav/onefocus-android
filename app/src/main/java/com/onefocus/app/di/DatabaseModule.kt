@@ -57,5 +57,9 @@ object DatabaseModule {
     @Singleton
     fun provideReflectionDao(database: AppDatabase): ReflectionDao {
         return database.reflectionDao()
-    }
+    
+    @Provides
+    @Singleton
+    fun provideFailureAnalysisDao(database: AppDatabase) = database.failureAnalysisDao()
+}
 }

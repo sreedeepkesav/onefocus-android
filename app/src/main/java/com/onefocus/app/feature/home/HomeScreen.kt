@@ -31,6 +31,7 @@ fun HomeScreen(
     onNavigateToAddSecondHabit: () -> Unit,
     onNavigateToAnalytics: () -> Unit,
     onNavigateToSettings: () -> Unit,
+    onNavigateToFailureAnalysis: () -> Unit,
     onNavigateToReflection: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
