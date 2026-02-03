@@ -14,9 +14,11 @@ import javax.inject.Inject
 data class HomeState(
     val journey: Journey? = null,
     val primaryHabit: Habit? = null,
+    val secondaryHabit: Habit? = null,
     val isCompletedToday: Boolean = false,
     val isLoading: Boolean = true,
-    val canAddSecondHabit: Boolean = false
+    val canAddSecondHabit: Boolean = false,
+    val isSecondHabitUnlocked: Boolean = false
 )
 
 @HiltViewModel
@@ -36,17 +38,21 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             combine(
                 journeyRepository.getJourney(),
-                habitRepository.getPrimaryHabit()
-            ) { journey, habit ->
+                habitRepository.getPrimaryHabit(),
+                habitRepository.getSecondaryHabit()
+            ) { journey, primaryHabit, secondaryHabit ->
                 val isCompleted = journey?.isCompletedToday(0) ?: false
-                val canAddSecond = (journey?.currentDay ?: 0) >= 21
+                val completedDays = journey?.completedDays?.size ?: 0
+                val canAddSecond = completedDays >= 21 && secondaryHabit == null
 
                 HomeState(
                     journey = journey,
-                    primaryHabit = habit,
+                    primaryHabit = primaryHabit,
+                    secondaryHabit = secondaryHabit,
                     isCompletedToday = isCompleted,
                     isLoading = false,
-                    canAddSecondHabit = canAddSecond
+                    canAddSecondHabit = canAddSecond,
+                    isSecondHabitUnlocked = completedDays >= 21
                 )
             }.collect { newState ->
                 _state.value = newState

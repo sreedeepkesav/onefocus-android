@@ -47,4 +47,14 @@ class JourneyRepository @Inject constructor(
         )
         journeyDao.update(updated)
     }
+
+    suspend fun resetJourney() {
+        val newJourney = Journey(
+            startDate = System.currentTimeMillis(),
+            completedDays = emptyList(),
+            flexDaysUsed = 0,
+            totalFocusTimeSeconds = 0
+        )
+        journeyDao.insert(newJourney)
+    }
 }

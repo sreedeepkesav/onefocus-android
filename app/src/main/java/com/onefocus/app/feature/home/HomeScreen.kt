@@ -7,6 +7,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -27,6 +29,8 @@ import com.onefocus.app.feature.home.components.JourneyCard
 fun HomeScreen(
     onNavigateToFocus: () -> Unit,
     onNavigateToAddSecondHabit: () -> Unit,
+    onNavigateToAnalytics: () -> Unit,
+    onNavigateToSettings: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -50,13 +54,36 @@ fun HomeScreen(
                     .padding(top = 60.dp, bottom = 100.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                // Header
-                Text(
-                    text = "OneFocus",
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                // Header with action buttons
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "OneFocus",
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        IconButton(onClick = onNavigateToAnalytics) {
+                            Icon(
+                                imageVector = Icons.Default.BarChart,
+                                contentDescription = "View Analytics",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        IconButton(onClick = onNavigateToSettings) {
+                            Icon(
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = "Settings",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                }
 
                 // Journey card
                 state.journey?.let { journey ->
@@ -71,7 +98,15 @@ fun HomeScreen(
                     )
                 }
 
-                // Add second habit card (if unlocked)
+                // Second habit card (if exists)
+                state.secondaryHabit?.let { habit ->
+                    HabitCard(
+                        habit = habit,
+                        isCompleted = state.journey?.isCompletedToday(1) ?: false
+                    )
+                }
+
+                // Add second habit card (if unlocked and not yet added)
                 if (state.canAddSecondHabit) {
                     SecondHabitCard(onClick = onNavigateToAddSecondHabit)
                 }

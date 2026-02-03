@@ -1,20 +1,10 @@
 package com.onefocus.app.core.navigation
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.onefocus.app.core.design.OnSurface
-import com.onefocus.app.core.design.Surface
-import com.onefocus.app.data.model.enums.HabitType
 import com.onefocus.app.data.model.enums.TriggerType
 import com.onefocus.app.feature.onboarding.*
 import com.onefocus.app.feature.home.HomeScreen
@@ -22,6 +12,9 @@ import com.onefocus.app.feature.focus.FocusScreen
 import com.onefocus.app.feature.focus.CelebrationScreen
 import com.onefocus.app.feature.mood.MoodBeforeScreen
 import com.onefocus.app.feature.mood.MoodAfterScreen
+import com.onefocus.app.feature.analytics.AnalyticsScreen
+import com.onefocus.app.feature.settings.SettingsScreen
+import com.onefocus.app.feature.secondhabit.AddSecondHabitScreen
 
 @Composable
 fun OneFocusNavGraph(
@@ -135,6 +128,12 @@ fun OneFocusNavGraph(
                 },
                 onNavigateToAddSecondHabit = {
                     navController.navigate(Destination.AddSecondHabit.route)
+                },
+                onNavigateToAnalytics = {
+                    navController.navigate(Destination.Analytics.route)
+                },
+                onNavigateToSettings = {
+                    navController.navigate(Destination.Settings.route)
                 }
             )
         }
@@ -168,7 +167,6 @@ fun OneFocusNavGraph(
 
         // Celebration
         composable(Destination.Celebration.route) {
-            // Get journey data from HomeViewModel or pass through navigation
             val homeViewModel: com.onefocus.app.feature.home.HomeViewModel = hiltViewModel()
             val homeState by homeViewModel.state.collectAsState()
 
@@ -183,11 +181,40 @@ fun OneFocusNavGraph(
             )
         }
 
-        // Add Second Habit (placeholder - reuses onboarding for now)
+        // Analytics/Insights Screen
+        composable(Destination.Analytics.route) {
+            AnalyticsScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // Settings Screen
+        composable(Destination.Settings.route) {
+            SettingsScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // Add Second Habit Screen
         composable(Destination.AddSecondHabit.route) {
-            // For now, navigate back to habit type selection
-            // In the future, this would be a dedicated flow
-            navController.navigate(Destination.HabitType.route)
+            val homeViewModel: com.onefocus.app.feature.home.HomeViewModel = hiltViewModel()
+            val homeState by homeViewModel.state.collectAsState()
+
+            AddSecondHabitScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onNavigateToOnboarding = {
+                    // Navigate to habit type selection for second habit
+                    navController.navigate(Destination.HabitType.route)
+                },
+                isUnlocked = homeState.isSecondHabitUnlocked,
+                daysCompleted = homeState.journey?.completedDays?.size ?: 0
+            )
         }
     }
 }
