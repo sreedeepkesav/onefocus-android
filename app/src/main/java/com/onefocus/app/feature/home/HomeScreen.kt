@@ -31,6 +31,7 @@ fun HomeScreen(
     onNavigateToAddSecondHabit: () -> Unit,
     onNavigateToAnalytics: () -> Unit,
     onNavigateToSettings: () -> Unit,
+    onNavigateToReflection: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -90,6 +91,14 @@ fun HomeScreen(
                     JourneyCard(journey = journey)
                 }
 
+                // Reflection prompt card (when due)
+                if (state.shouldShowReflectionPrompt) {
+                    ReflectionPromptCard(
+                        weekNumber = state.journey?.currentDay?.div(7) ?: 0,
+                        onClick = onNavigateToReflection
+                    )
+                }
+
                 // Habit card
                 state.primaryHabit?.let { habit ->
                     HabitCard(
@@ -132,6 +141,54 @@ fun HomeScreen(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun ReflectionPromptCard(
+    weekNumber: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        onClick = onClick,
+        modifier = modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Purple80.copy(alpha = 0.15f)
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = "✨ Week $weekNumber Reflection",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = Purple80
+                )
+                Text(
+                    text = "Take 2 minutes to reflect on your progress",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+            Icon(
+                imageVector = Icons.Default.BarChart,
+                contentDescription = "Start reflection",
+                tint = Purple80,
+                modifier = Modifier.size(32.dp)
+            )
         }
     }
 }

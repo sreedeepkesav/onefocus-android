@@ -24,7 +24,9 @@ object DatabaseModule {
             context,
             AppDatabase::class.java,
             "onefocus_database"
-        ).build()
+        )
+        .fallbackToDestructiveMigration() // For development - allows schema changes
+        .build()
     }
 
     @Provides
@@ -49,5 +51,11 @@ object DatabaseModule {
     @Singleton
     fun provideRepeatingLogDao(database: AppDatabase): RepeatingLogDao {
         return database.repeatingLogDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideReflectionDao(database: AppDatabase): ReflectionDao {
+        return database.reflectionDao()
     }
 }

@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.onefocus.app.data.model.Journey
 import com.onefocus.app.data.model.MoodEntry
+import com.onefocus.app.data.model.Reflection
 import com.onefocus.app.data.repository.JourneyRepository
 import com.onefocus.app.data.repository.MoodRepository
+import com.onefocus.app.data.repository.ReflectionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,13 +37,15 @@ data class AnalyticsState(
     val currentStreak: Int = 0,
     val totalFocusTime: String = "0h 0m",
     val heatmapDays: List<DayData> = emptyList(),
-    val moodCorrelation: MoodCorrelation? = null
+    val moodCorrelation: MoodCorrelation? = null,
+    val reflections: List<Reflection> = emptyList()
 )
 
 @HiltViewModel
 class AnalyticsViewModel @Inject constructor(
     private val journeyRepository: JourneyRepository,
-    private val moodRepository: MoodRepository
+    private val moodRepository: MoodRepository,
+    private val reflectionRepository: ReflectionRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AnalyticsState())
@@ -55,10 +59,11 @@ class AnalyticsViewModel @Inject constructor(
         viewModelScope.launch {
             combine(
                 journeyRepository.getJourney(),
-                moodRepository.getAllMoodEntries()
-            ) { journey, moodEntries ->
-                journey to moodEntries
-            }.collect { (journey, moodEntries) ->
+                moodRepository.getAllMoodEntries(),
+                reflectionRepository.getAllReflections()
+            ) { journey, moodEntries, reflections ->
+                Triple(journey, moodEntries, reflections)
+            }.collect { (journey, moodEntries, reflections) ->
                 journey?.let {
                     _state.value = AnalyticsState(
                         journey = it,
@@ -67,7 +72,13 @@ class AnalyticsViewModel @Inject constructor(
                         currentStreak = it.currentStreak,
                         totalFocusTime = formatFocusTime(it.totalFocusTimeSeconds),
                         heatmapDays = generateHeatmapDays(it),
-                        moodCorrelation = calculateMoodCorrelation(moodEntries)
+                        moodCorrelation = calculateMoodCorrelation(moodEntries),
+                        reflections = reflections.filter { reflection ->
+                            // Only show non-empty reflections
+                            reflection.whatHelped.isNotBlank() ||
+                            reflection.whatHindered.isNotBlank() ||
+                            reflection.patternsNoticed.isNotBlank()
+                        }
                     )
                 }
             }

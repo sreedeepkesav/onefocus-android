@@ -14,6 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.onefocus.app.feature.analytics.components.CalendarHeatmap
 import com.onefocus.app.feature.analytics.components.MoodCorrelationCard
+import com.onefocus.app.feature.analytics.components.ReflectionsCard
 import com.onefocus.app.feature.analytics.components.StatsCard
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,6 +65,11 @@ fun AnalyticsScreen(
             // Mood Correlation Card (only if mood data exists)
             state.moodCorrelation?.let { moodCorrelation ->
                 MoodCorrelationCard(moodCorrelation = moodCorrelation)
+            }
+
+            // Reflections Card (only if reflections exist)
+            if (state.reflections.isNotEmpty()) {
+                ReflectionsCard(reflections = state.reflections)
             }
         }
     }

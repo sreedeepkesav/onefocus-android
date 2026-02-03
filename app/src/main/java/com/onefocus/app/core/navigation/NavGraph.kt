@@ -132,6 +132,9 @@ fun OneFocusNavGraph(
                 },
                 onNavigateToSettings = {
                     navController.navigate(Destination.Settings.route)
+                },
+                onNavigateToReflection = {
+                    navController.navigate(Destination.Reflection.route)
                 }
             )
         }
@@ -161,9 +164,6 @@ fun OneFocusNavGraph(
                     navController.navigate(Destination.Home.route) {
                         popUpTo(Destination.Home.route) { inclusive = true }
                     }
-                }
-            )
-        }
                 }
             )
         }
@@ -201,6 +201,15 @@ fun OneFocusNavGraph(
                 },
                 isUnlocked = homeState.isSecondHabitUnlocked,
                 daysCompleted = homeState.journey?.completedDays?.size ?: 0
+            )
+        }
+
+        // Reflection Screen
+        composable(Destination.Reflection.route) {
+            com.onefocus.app.feature.reflection.ReflectionScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
             )
         }
     }

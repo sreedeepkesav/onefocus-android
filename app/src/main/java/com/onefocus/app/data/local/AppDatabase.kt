@@ -11,9 +11,10 @@ import com.onefocus.app.data.model.*
         Habit::class,
         Journey::class,
         MoodEntry::class,
-        RepeatingLog::class
+        RepeatingLog::class,
+        Reflection::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -22,4 +23,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun journeyDao(): JourneyDao
     abstract fun moodDao(): MoodDao
     abstract fun repeatingLogDao(): RepeatingLogDao
+    abstract fun reflectionDao(): ReflectionDao
 }
