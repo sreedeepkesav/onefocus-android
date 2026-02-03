@@ -8,8 +8,6 @@ import androidx.navigation.compose.composable
 import com.onefocus.app.data.model.enums.TriggerType
 import com.onefocus.app.feature.onboarding.*
 import com.onefocus.app.feature.home.HomeScreen
-import com.onefocus.app.feature.focus.FocusScreen
-import com.onefocus.app.feature.focus.CelebrationScreen
 import com.onefocus.app.feature.mood.MoodBeforeScreen
 import com.onefocus.app.feature.mood.MoodAfterScreen
 import com.onefocus.app.feature.analytics.AnalyticsScreen
@@ -123,8 +121,8 @@ fun OneFocusNavGraph(
         // Home Screen
         composable(Destination.Home.route) {
             HomeScreen(
-                onNavigateToFocus = {
-                    navController.navigate(Destination.Focus.route)
+                onNavigateToMood = {
+                    navController.navigate(Destination.MoodBefore.route)
                 },
                 onNavigateToAddSecondHabit = {
                     navController.navigate(Destination.AddSecondHabit.route)
@@ -160,23 +158,12 @@ fun OneFocusNavGraph(
         composable(Destination.MoodAfter.route) {
             MoodAfterScreen(
                 onContinue = {
-                    navController.navigate(Destination.Celebration.route)
-                }
-            )
-        }
-
-        // Celebration
-        composable(Destination.Celebration.route) {
-            val homeViewModel: com.onefocus.app.feature.home.HomeViewModel = hiltViewModel()
-            val homeState by homeViewModel.state.collectAsState()
-
-            CelebrationScreen(
-                dayNumber = homeState.journey?.currentDay ?: 1,
-                streak = homeState.journey?.currentStreak ?: 1,
-                onBackToHome = {
                     navController.navigate(Destination.Home.route) {
                         popUpTo(Destination.Home.route) { inclusive = true }
                     }
+                }
+            )
+        }
                 }
             )
         }

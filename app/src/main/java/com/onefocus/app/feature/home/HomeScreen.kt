@@ -27,7 +27,7 @@ import com.onefocus.app.feature.home.components.JourneyCard
 
 @Composable
 fun HomeScreen(
-    onNavigateToFocus: () -> Unit,
+    onNavigateToMood: () -> Unit,
     onNavigateToAddSecondHabit: () -> Unit,
     onNavigateToAnalytics: () -> Unit,
     onNavigateToSettings: () -> Unit,
@@ -115,7 +115,7 @@ fun HomeScreen(
             // Floating Action Button
             if (!state.isCompletedToday) {
                 FloatingActionButton(
-                    onClick = onNavigateToFocus,
+                    onClick = onNavigateToMood,
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .padding(24.dp)
